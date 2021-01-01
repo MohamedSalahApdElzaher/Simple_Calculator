@@ -1,0 +1,9 @@
+Creat a simple calculator using microprocessor8086
+Calculator must support basic arthmetic operations ( + - * / )
+Input: User Enter one line of arthmetic equation containing numerical values and operators
+Output: Single Numerical value represent equation results 
+Input ex_0 :
+2 + 3 * 4
+Output ex_0 :
+14
+
