@@ -14,7 +14,9 @@
 - [VSC](https://code.visualstudio.com/Download)
 - [Irvine Library](http://csc.csudh.edu/mmccullough/asm/help/index.html?page=source%2Fmacros32%2Fmdumpmem.htm)
 
-// Briefy illustration of program algorithm 
+// Briefy illustration of solving 2 inputs program algorithm 
+
+// Briefy illustration of solving equation program algorithm 
 
 // put Image show program at first before any I/O operations
 
