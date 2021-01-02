@@ -1,4 +1,4 @@
-### **Simple_Calculator_Assembly8086_project**
+### **Simple Assembly Calculator**
 
 **Tools**
 
