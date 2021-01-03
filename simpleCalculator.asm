@@ -1,7 +1,7 @@
-include    \Irvine\Irvine32.inc
-includelib \Irvine\irvine32.lib
-includelib \Irvine\kernel32.lib
-includelib \masm32\lib\user32.lib
+include    c:\Irvine\Irvine32.inc
+includelib c:\Irvine\irvine32.lib
+includelib c:\Irvine\kernel32.lib
+includelib c:\masm32\lib\user32.lib
 
 		; .data is used for declaring and defining variables
 .data
@@ -20,6 +20,9 @@ prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Arithmatic operation: ", 0
 resultPrompt		BYTE "Result evaluation: ", 0
+addt                BYTE "addtion",0         ;for test
+subt                BYTE "subtraction",0     ;for test
+msg                 BYTE "pleas enert valid opertor : ",0
 
 addition				BYTE '+', 0
 subtraction				BYTE '-', 0
@@ -54,16 +57,24 @@ main PROC
 		mov		operand2, eax	; copy EAX value to the second operand
 
 	; Ask and get the arithmatic operation
+	op:
 		lea		edx, prompt3
 		call	WriteString		; write the prompt3 guidance message
 		call	ReadChar		; read character from the user and store it in AL
 		mov		operation, al	; copy the character from AL to operation variable
 	
 	; Redirection to the  the needed operation
+        cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
+		je multiplication_block               ; jump to multiplication_block 
+		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
+		je addition_block                     ; jump to addition_block 
+		cmp al , 2Dh                          ; 2Fh is equivalent to - opertor in ASCII
+		je subtraction_block                  ; jump to subtraction_block
+		cmp al , 2Fh                          ; 2Dh is equivalent to / opertor in ASCII
+		je division_block                     ; jump to division_block
+		jmp mas                               ; jump to print message if user enter invalid operator
 
-	; A comment block to guide you all
-
-	comment ! 
+		comment ! 
 		
 		Here you must check out the operation then redirect the program flow
 		to the suitable arithmatic block, and then from that block jump to print
@@ -82,39 +93,56 @@ main PROC
 		jmp quit
 
 		!
+	; A comment block to guide you all
 		
 		
+	addition_block:
+	                mov edx , offset addt ; for test
+					call WriteString
+					jmp quit
+					
+	subtraction_block:
+	                mov edx , offset subt  ; for test
+					call WriteString
+					jmp quit
+	
+	
+	
 	; Mul operation	
         ; Check the number +ve or -ve (Note: need to be handled in a seprate block for all operations)
         ; The value is negative if the MSB is set. 
         ; Use 'cmp' to check  
 
-        	cmp operand1, 0
-        	jl Negative_Mul   				   	  ; Jump if less    
+    multiplication_block:
+	            mov ebx , operand1
+				cmp ebx, 0
+				jl Negative_Mul   				   	  ; Jump if less    
+                mov ebx , operand2
+				cmp ebx, 0	
+				jl Negative_Mul   				   	  ; Jump if less 
 
-		cmp operand2, 0	
-       	 	jl Negative_Mul   				   	  ; Jump if less 
-    
-        	cmp operation, '*'                    		   	  ; check value of operation == '*' or not
-        	je Positive_Mul     			      		  ; if yes -> jump to multiplication_block 
-	
-	; multiplication_32bit
-	
-	Positive_Mul:         				                  ; mul used in unsigned numbers
-        	mov eax,operand1                  		          ; copy operand1 value --> eax
-        	mov ebx,operand2                     			  ; copy operand2 value --> ebx
-        	mul ebx                             			  ; mul eax, ebx & store result in edx-eax
-        	mov result, eax                      			  ; copy eax value --> result
-      
-	Negative_Mul:							  ; imul used in signed numbers
-       	 	mov eax,operand1                     			  ; copy operand1 value --> eax
-        	mov ebx,operand2                     			  ; copy operand2 value --> ebx
-        	imul ebx                             			  ; imul eax, ebx & store result in edx-eax
-        	mov result, eax                      			  ; copy eax value --> result
-		
-		
-		
-		
+				; cmp operation, '*'                    		   	  ; check value of operation == '*' or not
+				; je Positive_Mul     			      		  ; if yes -> jump to multiplication_block 
+				
+				; multiplication_32bit
+			
+				Positive_Mul:         				                  ; mul used in unsigned numbers
+						mov eax,operand1                  		          ; copy operand1 value --> eax
+						mov ebx,operand2                     			  ; copy operand2 value --> ebx
+						mul ebx                            			  ; mul eax, ebx & store result in edx-eax
+						mov result, eax                      			  ; copy eax value --> result
+				        jmp Print_results                                 ; Print_results
+
+
+				Negative_Mul:							  ; imul used in signed numbers
+						mov eax,operand1                     			  ; copy operand1 value --> eax
+						mov ebx,operand2                     			  ; copy operand2 value --> ebx
+						imul ebx                             			  ; imul eax, ebx & store result in edx-eax
+						mov result, eax                      			  ; copy eax value --> result
+					    jmp Print_results                                 ; Print_results
+					
+				
+				
 
 
 	; divisoin opertion 
@@ -126,7 +154,7 @@ main PROC
 		; 2. fix divide by zero 
 		; 3. divide overflow 
 		; 4. signed divide 
-		 
+		
 
 	division_block: 
 		xor EDX, EDX  		; clear EdX 
@@ -144,7 +172,12 @@ main PROC
 
 
 	; Print results
-
+    mas:
+	        call Crlf
+			mov edx , offset msg
+			call WriteString
+			jmp op
+	
 	Print_results:
 		; Print result prompt
 		call	CrLf
