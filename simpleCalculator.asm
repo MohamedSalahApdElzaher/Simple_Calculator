@@ -12,21 +12,21 @@ directions			BYTE "Enter two numbers to first numbers:", 0
 operand1			DWORD ?
 operand2			DWORD ?
 operation			BYTE  ?
-result           	DWORD ?
+result           	        DWORD ?
 quotinent			DWORD ?  ; for divisoin operator 
 remainder 			DWORD ?  ; for divisoin operator 
 
 prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Arithmatic operation: ", 0
-resultPrompt		BYTE "Result evaluation: ", 0
-addt                BYTE "addtion",0         ;for test
-subt                BYTE "subtraction",0     ;for test
-msg                 BYTE "pleas enert valid opertor : ",0
+resultPrompt		        BYTE "Result evaluation: ", 0
+addt                		BYTE "addtion",0         ;for test
+subt                		BYTE "subtraction",0     ;for test
+msg                		BYTE "pleas enert valid opertor : ",0
 
 addition				BYTE '+', 0
 subtraction				BYTE '-', 0
-multiplication			BYTE '*', 0
+multiplication				BYTE '*', 0
 division				BYTE '/', 0
 equal_sign				BYTE '=', 0
 parth_1					BYTE '(', 0
@@ -39,32 +39,32 @@ main PROC
 
 	; Printing the calculator title
 		call	CrLf				; spacing for readability
-		lea		edx, calcTitle		; copy the address of caltitle to EDX register
+		lea	edx, calcTitle		; copy the address of caltitle to EDX register
 		call	WriteString			; write the calculator title
 		call	CrLf				
 		call	CrLf
 
 	; Ask and get the first number
-		lea		edx, prompt1
+		lea	edx, prompt1
 		call	WriteString		; write the prompt1 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
-		mov		operand1, eax	; copy EAX value to the first operand
+		mov	operand1, eax	; copy EAX value to the first operand
 
 	; Ask and get the second number
-		lea		edx, prompt2
+		lea	edx, prompt2
 		call	WriteString		; write the prompt2 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
-		mov		operand2, eax	; copy EAX value to the second operand
+		mov	operand2, eax	; copy EAX value to the second operand
 
 	; Ask and get the arithmatic operation
 	op:
-		lea		edx, prompt3
+		lea	edx, prompt3
 		call	WriteString		; write the prompt3 guidance message
 		call	ReadChar		; read character from the user and store it in AL
-		mov		operation, al	; copy the character from AL to operation variable
+		mov	operation, al	; copy the character from AL to operation variable
 	
 	; Redirection to the  the needed operation
-        cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
+        	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
 		je multiplication_block               ; jump to multiplication_block 
 		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
 		je addition_block                     ; jump to addition_block 
@@ -102,7 +102,7 @@ main PROC
 					mov result , eax
 					jmp Print_results
 	subtraction_block:
-	                mov edx , offset subt  ; for test
+	                		mov edx , offset subt  ; for test
 					call WriteString
 					jmp quit
 	
@@ -114,10 +114,10 @@ main PROC
         ; Use 'cmp' to check  
 
     multiplication_block:
-	            mov ebx , operand1
+	            		mov ebx , operand1
 				cmp ebx, 0
 				jl Negative_Mul   				   	  ; Jump if less    
-                mov ebx , operand2
+                		mov ebx , operand2
 				cmp ebx, 0	
 				jl Negative_Mul   				   	  ; Jump if less 
 
@@ -131,7 +131,7 @@ main PROC
 						mov ebx,operand2                     			  ; copy operand2 value --> ebx
 						mul ebx                            			  ; mul eax, ebx & store result in edx-eax
 						mov result, eax                      			  ; copy eax value --> result
-				        jmp Print_results                                 ; Print_results
+				        	jmp Print_results                                 ; Print_results
 
 
 				Negative_Mul:							  ; imul used in signed numbers
@@ -139,7 +139,7 @@ main PROC
 						mov ebx,operand2                     			  ; copy operand2 value --> ebx
 						imul ebx                             			  ; imul eax, ebx & store result in edx-eax
 						mov result, eax                      			  ; copy eax value --> result
-					    jmp Print_results                                 ; Print_results
+					   	jmp Print_results                                 ; Print_results
 					
 				
 				
@@ -171,13 +171,14 @@ main PROC
 
 
 
-	; Print results
-    mas:
-	        call Crlf
+	
+   	 mas:
+	        	call Crlf
 			mov edx , offset msg
 			call WriteString
 			jmp op
-	
+			
+	; Print results
 	Print_results:
 		; Print result prompt
 		call	CrLf
@@ -186,55 +187,55 @@ main PROC
 		call	WriteString
 
 		; Print the first parth_1
-		mov		al, parth_1
-		call	WriteChar
+		mov  al, parth_1
+		call WriteChar
 
 		; Print the first operand
-		mov		eax, operand1
+		mov	eax, operand1
 		call	WriteInt
 
 		; Print the second parth_2
-		mov		al, parth_2
+		mov	al, parth_2
 		call	WriteChar
 
 		; Print the spacing
-		mov		al, space
+		mov	al, space
 		call	WriteChar
 
 		; Print the operation sign
-		mov		al, operation
+		mov	al, operation
 		call	WriteChar
 
 		; Print the spacing
-		mov		al, space
+		mov	al, space
 		call	WriteChar
 
 		; Print the first parth_1
-		mov		al, parth_1
+		mov	al, parth_1
 		call	WriteChar
 
 		; Print the second operand
-		mov		eax,  operand2
+		mov	eax,  operand2
 		call	WriteInt
 
 		; Print the second parth_2
-		mov		al, parth_2
+		mov	al, parth_2
 		call	WriteChar
 
 		; Print the spacing
-		mov		al, space
+		mov	al, space
 		call	WriteChar
 
 		; Print the equals sign
-		mov		al, equal_sign
+		mov	al, equal_sign
 		call	WriteChar
 
 		; Print the spacing
-		mov		al, space
+		mov	al, space
 		call	WriteChar
 
 		; Print out the result
-                mov		eax, result
+                mov	eax, result
 		call	WriteInt
 		call	CrLf
 		jmp 	quit
