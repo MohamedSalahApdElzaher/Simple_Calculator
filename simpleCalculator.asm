@@ -97,10 +97,10 @@ main PROC
 		
 		
 	addition_block:
-	                mov edx , offset addt ; for test
-					call WriteString
-					jmp quit
-					
+					mov eax, operand2
+					add eax , operand1
+					mov result , eax
+					jmp Print_results
 	subtraction_block:
 	                mov edx , offset subt  ; for test
 					call WriteString
