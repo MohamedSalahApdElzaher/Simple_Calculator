@@ -80,6 +80,19 @@ main PROC
 		
 
 
+	; divisoin opertion 
+		; 1. division operation 32bit => 64bit by 32bit 
+			;1.a) the 64bit number is saved in EDX and EAX , 32 bit any operand by the instruction 
+			;1.b) will result quotinent 32bit in EAX and remainder in 32bit in EDX 
+				;* the CDQ convert doubleword to quadword 
+			;1.c) the reminder may takes two ways : A- round up B- convert to fractional number 
+		; 2. fix divide by zero 
+		; 3. divide overflow 
+		; 4. signed divide 
+		 
+
+
+
 
 
 	; Print results
