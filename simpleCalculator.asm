@@ -13,6 +13,8 @@ operand1			DWORD ?
 operand2			DWORD ?
 operation			BYTE  ?
 result           	DWORD ?
+quotinent			DWORD ?  ; for divisoin operator 
+remainder 			DWORD ?  ; for divisoin operator 
 
 prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
@@ -91,6 +93,17 @@ main PROC
 		; 4. signed divide 
 		 
 
+	division_block: 
+		xor EDX, EDX  		; clear EdX 
+		mov EAX, operand1	; get operands 
+		mov EBX, operand2 
+		div EBX 
+		mov quotinent, EAX  ; save quotinent
+		mov result, EAX 
+		jmp Print_results
+		; xor EAX, EAX
+		; div EBX 			; genrate remainder 
+		; mov remainder, EAX   
 
 
 
