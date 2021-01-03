@@ -20,9 +20,10 @@ prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Arithmatic operation: ", 0
 resultPrompt		        BYTE "Result evaluation: ", 0
-addt                		BYTE "addtion",0         ;for test
 subt                		BYTE "subtraction",0     ;for test
-msg                		BYTE "pleas enert valid opertor : ",0
+msg                		BYTE "pleas enert valid opertor : ",0                      ;message for invalid operator
+oferflow                        BYTE "there are overflow damge pleas try again ",0         ; message for overflow
+
 
 addition				BYTE '+', 0
 subtraction				BYTE '-', 0
@@ -39,7 +40,7 @@ main PROC
 
 	; Printing the calculator title
 		call	CrLf				; spacing for readability
-		lea	edx, calcTitle		; copy the address of caltitle to EDX register
+		lea	edx, calcTitle		        ; copy the address of caltitle to EDX register
 		call	WriteString			; write the calculator title
 		call	CrLf				
 		call	CrLf
@@ -48,33 +49,22 @@ main PROC
 		lea	edx, prompt1
 		call	WriteString		; write the prompt1 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
-		mov	operand1, eax	; copy EAX value to the first operand
+		mov	operand1, eax	        ; copy EAX value to the first operand
 
 	; Ask and get the second number
 		lea	edx, prompt2
 		call	WriteString		; write the prompt2 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
-		mov	operand2, eax	; copy EAX value to the second operand
+		mov	operand2, eax	        ; copy EAX value to the second operand
 
 	; Ask and get the arithmatic operation
 	op:
 		lea	edx, prompt3
 		call	WriteString		; write the prompt3 guidance message
 		call	ReadChar		; read character from the user and store it in AL
-		mov	operation, al	; copy the character from AL to operation variable
-	
-	; Redirection to the  the needed operation
-        	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
-		je multiplication_block               ; jump to multiplication_block 
-		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
-		je addition_block                     ; jump to addition_block 
-		cmp al , 2Dh                          ; 2Fh is equivalent to - opertor in ASCII
-		je subtraction_block                  ; jump to subtraction_block
-		cmp al , 2Fh                          ; 2Dh is equivalent to / opertor in ASCII
-		je division_block                     ; jump to division_block
-		jmp mas                               ; jump to print message if user enter invalid operator
-
-		comment ! 
+		mov	operation, al	        ; copy the character from AL to operation variable
+	; A comment block to guide you all
+	comment ! 
 		
 		Here you must check out the operation then redirect the program flow
 		to the suitable arithmatic block, and then from that block jump to print
@@ -93,16 +83,26 @@ main PROC
 		jmp quit
 
 		!
-	; A comment block to guide you all
+	; Redirection to the  the needed operation
+        	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
+		je multiplication_block               ; jump to multiplication_block 
+		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
+		je addition_block                     ; jump to addition_block 
+		cmp al , 2Dh                          ; 2Fh is equivalent to - opertor in ASCII
+		je subtraction_block                  ; jump to subtraction_block
+		cmp al , 2Fh                          ; 2Dh is equivalent to / opertor in ASCII
+		je division_block                     ; jump to division_block
+		jmp mas                               ; jump to print message if user enter invalid operator
+
 		
-		
-	addition_block:
+	addition_block:                                              ; addition opertion 
 					mov eax, operand2
-					add eax , operand1
+					add eax , operand1           ; num1  + num2
 					mov result , eax
-					jmp Print_results
+					jo ovr                       ; jump if found overflow 
+					jmp Print_results            ; print resultes
 	subtraction_block:
-	                		mov edx , offset subt  ; for test
+	                		mov edx , offset subt        ; for test
 					call WriteString
 					jmp quit
 	
@@ -113,7 +113,7 @@ main PROC
         ; The value is negative if the MSB is set. 
         ; Use 'cmp' to check  
 
-    multiplication_block:
+        multiplication_block:
 	            		mov ebx , operand1
 				cmp ebx, 0
 				jl Negative_Mul   				   	  ; Jump if less    
@@ -121,25 +121,25 @@ main PROC
 				cmp ebx, 0	
 				jl Negative_Mul   				   	  ; Jump if less 
 
-				; cmp operation, '*'                    		   	  ; check value of operation == '*' or not
+				; cmp operation, '*'                    		  ; check value of operation == '*' or not
 				; je Positive_Mul     			      		  ; if yes -> jump to multiplication_block 
 				
 				; multiplication_32bit
 			
-				Positive_Mul:         				                  ; mul used in unsigned numbers
-						mov eax,operand1                  		          ; copy operand1 value --> eax
-						mov ebx,operand2                     			  ; copy operand2 value --> ebx
-						mul ebx                            			  ; mul eax, ebx & store result in edx-eax
-						mov result, eax                      			  ; copy eax value --> result
-				        	jmp Print_results                                 ; Print_results
+				Positive_Mul:         				           ; mul used in unsigned numbers
+						mov eax,operand1                  	   ; copy operand1 value --> eax
+						mov ebx,operand2                           ; copy operand2 value --> ebx
+						mul ebx                                    ; mul eax, ebx & store result in edx-eax
+						mov result, eax                            ; copy eax value --> result
+				        	jmp Print_results                          ; Print_results
 
 
-				Negative_Mul:							  ; imul used in signed numbers
-						mov eax,operand1                     			  ; copy operand1 value --> eax
-						mov ebx,operand2                     			  ; copy operand2 value --> ebx
-						imul ebx                             			  ; imul eax, ebx & store result in edx-eax
-						mov result, eax                      			  ; copy eax value --> result
-					   	jmp Print_results                                 ; Print_results
+				Negative_Mul:					           ; imul used in signed numbers
+						mov eax,operand1                           ; copy operand1 value --> eax
+						mov ebx,operand2                           ; copy operand2 value --> ebx
+						imul ebx                                   ; imul eax, ebx & store result in edx-eax
+						mov result, eax                      	   ; copy eax value --> result
+					   	jmp Print_results                          ; Print_results
 					
 				
 				
@@ -157,28 +157,35 @@ main PROC
 		
 
 	division_block: 
-		xor EDX, EDX  		; clear EdX 
-		mov EAX, operand1	; get operands 
+		xor EDX, EDX  		 		; clear EdX 
+		mov EAX, operand1			; get operands 
 		mov EBX, operand2 
 		div EBX 
-		mov quotinent, EAX  ; save quotinent
+		mov quotinent, EAX  			; save quotinent
 		mov result, EAX 
 		jmp Print_results
 		; xor EAX, EAX
-		; div EBX 			; genrate remainder 
+		; div EBX 				; genrate remainder 
 		; mov remainder, EAX   
 
 
 
 
 	
-   	 mas:
+   	 mas:                                        ; print message if the user enterd a invalid operator 
 	        	call Crlf
 			mov edx , offset msg
 			call WriteString
 			jmp op
 			
-	; Print results
+         ovr :
+	      		mov edx , offset oferflow    ; print message if found overflow
+			call WriteString
+			jmp quit
+
+       
+       ; Print results
+       
 	Print_results:
 		; Print result prompt
 		call	CrLf
