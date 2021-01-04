@@ -109,23 +109,17 @@ main PROC
         ; The value is negative if the MSB is set. 
         ; Use 'cmp' to check  
 
+ 
     do_multiplication:
 		mov ebx , operand1
 		cmp ebx, 0
-		jl Negative_Mul   		; Jump if less    
+		jl _Mul   		               ; Jump if less    
 		mov ebx , operand2
 		cmp ebx, 0	
-		jl Negative_Mul   		; Jump if less 
+		jl _Mul   		                ; Jump if less 
 	
-		Positive_Mul:         			; mul used in unsigned numbers
-		mov eax,operand1                  	; copy operand1 value --> eax
-		mov ebx,operand2                        ; copy operand2 value --> ebx
-		mul ebx                                 ; mul eax, ebx & store result in edx-eax
-		mov result, eax                         ; copy eax value --> result
-		jo overflow                             ; jump if overflow found
-		jmp print_results                       ; jump to print_results
 
-		Negative_Mul:				   ; imul used in signed numbers
+	_Mul:				                   ; imul used in signed numbers
 		mov eax,operand1                           ; copy operand1 value --> eax
 		mov ebx,operand2                           ; copy operand2 value --> ebx
 		imul ebx                                   ; imul eax, ebx & store result in edx-eax
