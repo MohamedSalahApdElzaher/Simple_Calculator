@@ -79,66 +79,50 @@ main PROC
 
 		
 	addition_block:                                              ; addition opertion 
-					mov eax, operand2
-					add eax , operand1           ; num1  + num2
-					mov result , eax
-					jo ovr                       ; jump if found overflow 
-					jmp Print_results            ; print resultes
+		mov eax, operand2
+		add eax , operand1           ; num1  + num2
+		mov result , eax
+		jo ovr                       ; jump if found overflow 
+		jmp Print_results            ; print resultes
 	subtraction_block:
-	                		mov eax , operand1 ;copy the first operand in eax
-					sub eax , operand2 ;subtract the second operand form the fisrt onr
-					mov result , eax   ;copy the subtraction result in the result
-					jmp Print_results  ;jump to print_result section
+		mov eax , operand1 ;copy the first operand in eax
+		sub eax , operand2 ;subtract the second operand form the fisrt onr
+		mov result , eax   ;copy the subtraction result in the result
+		jmp Print_results  ;jump to print_result section
 	
 	; Mul operation	
         ; Check the number +ve or -ve (Note: need to be handled in a seprate block for all operations)
         ; The value is negative if the MSB is set. 
         ; Use 'cmp' to check  
 
-        multiplication_block:
-	            		mov ebx , operand1
-				cmp ebx, 0
-				jl Negative_Mul   				   	  ; Jump if less    
-                		mov ebx , operand2
-				cmp ebx, 0	
-				jl Negative_Mul   				   	  ; Jump if less 
+    multiplication_block:
+		mov ebx , operand1
+		cmp ebx, 0
+		jl Negative_Mul   				   	  ; Jump if less    
+			mov ebx , operand2
+		cmp ebx, 0	
+		jl Negative_Mul   				   	  ; Jump if less 
 
-				; cmp operation, '*'                    		  ; check value of operation == '*' or not
-				; je Positive_Mul     			      		  ; if yes -> jump to multiplication_block 
-				
-				; multiplication_32bit
-			
-				Positive_Mul:         				           ; mul used in unsigned numbers
-						mov eax,operand1                  	   ; copy operand1 value --> eax
-						mov ebx,operand2                           ; copy operand2 value --> ebx
-						mul ebx                                    ; mul eax, ebx & store result in edx-eax
-						mov result, eax                            ; copy eax value --> result
-				        	jmp Print_results                          ; Print_results
-
-
-				Negative_Mul:					           ; imul used in signed numbers
-						mov eax,operand1                           ; copy operand1 value --> eax
-						mov ebx,operand2                           ; copy operand2 value --> ebx
-						imul ebx                                   ; imul eax, ebx & store result in edx-eax
-						mov result, eax                      	   ; copy eax value --> result
-					   	jmp Print_results                          ; Print_results
-					
-				
-				
-
-
-	; divisoin opertion 
-		; 1. division operation 32bit => 64bit by 32bit 
-			;1.a) the 64bit number is saved in EDX and EAX , 32 bit any operand by the instruction 
-			;1.b) will result quotinent 32bit in EAX and remainder in 32bit in EDX 
-				;* the CDQ convert doubleword to quadword 
-			;1.c) the reminder may takes two ways : A- round up B- convert to fractional number 
-			; 		we will use round up 
-		; 2. fix divide by zero 
-		; 3. divide overflow => i think itis will not happend 
-		; 4. signed divide => error will happend when divide -8/4 and if it 8/-4 will not happend 
-		; 	it works fine when make sign extend cqd , why it works? 
+		; cmp operation, '*'                    		  ; check value of operation == '*' or not
+		; je Positive_Mul     			      		  ; if yes -> jump to multiplication_block 
 		
+		; multiplication_32bit
+	
+	Positive_Mul:         				           ; mul used in unsigned numbers
+		mov eax,operand1                  	       ; copy operand1 value --> eax
+		mov ebx,operand2                           ; copy operand2 value --> ebx
+		mul ebx                                    ; mul eax, ebx & store result in edx-eax
+		mov result, eax                            ; copy eax value --> result
+		jmp Print_results                          ; Print_results
+
+
+	Negative_Mul:					               ; imul used in signed numbers
+		mov eax,operand1                           ; copy operand1 value --> eax
+		mov ebx,operand2                           ; copy operand2 value --> ebx
+		imul ebx                                   ; imul eax, ebx & store result in edx-eax
+		mov result, eax                      	   ; copy eax value --> result
+		jmp Print_results                          ; Print_results
+					
 
 	division_block: 
 		xor EDX, EDX  		 	; clear EdX => will have a most signtific 32bit from 64bit 
