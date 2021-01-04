@@ -19,11 +19,11 @@ remainder 			DWORD ?  ; for divisoin operator
 prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Arithmatic operation: ", 0
-resultPrompt		BYTE "Result evaluation: ", 0
-subt                BYTE "subtraction",0     ;for test
-msg                 BYTE "pleas enert valid opertor : ",0                      ;message for invalid operator
-oferflow            BYTE "there are overflow damge pleas try again ",0         ; message for overflow
-divideZero          BYTE "there is divide by zero happend",0         		   ; message for divide by zero 
+resultPrompt		        BYTE "Result evaluation: ", 0
+
+msg                             BYTE "pleas enert valid opertor : ",0                      ;message for invalid operator
+oferflow                        BYTE "there are overflow damge pleas try again ",0         ; message for overflow
+divideZero                      BYTE "there is divide by zero happend",0         		   ; message for divide by zero 
 
 
 addition				BYTE '+', 0
@@ -67,7 +67,7 @@ main PROC
 	
 	
 	; Redirection to the  the needed operation
-    	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
+    	         cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
 		je multiplication_block               ; jump to multiplication_block 
 		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
 		je addition_block                     ; jump to addition_block 
@@ -85,10 +85,11 @@ main PROC
 		jo ovr                       ; jump if found overflow 
 		jmp Print_results            ; print resultes
 	subtraction_block:
-		mov eax , operand1 ;copy the first operand in eax
-		sub eax , operand2 ;subtract the second operand form the fisrt onr
-		mov result , eax   ;copy the subtraction result in the result
-		jmp Print_results  ;jump to print_result section
+		mov eax , operand1 	     ;copy the first operand in eax
+		sub eax , operand2           ;subtract the second operand form the fisrt onr
+		mov result , eax             ;copy the subtraction result in the result
+		jo ovr                       ; jump if found overflow 
+		jmp Print_results            ;jump to print_result section
 	
 	; Mul operation	
         ; Check the number +ve or -ve (Note: need to be handled in a seprate block for all operations)
@@ -108,19 +109,21 @@ main PROC
 		
 		; multiplication_32bit
 	
-	Positive_Mul:         				           ; mul used in unsigned numbers
-		mov eax,operand1                  	       ; copy operand1 value --> eax
+	Positive_Mul:         				               ; mul used in unsigned numbers
+		mov eax,operand1                  	   ; copy operand1 value --> eax
 		mov ebx,operand2                           ; copy operand2 value --> ebx
 		mul ebx                                    ; mul eax, ebx & store result in edx-eax
 		mov result, eax                            ; copy eax value --> result
+		jo ovr                                     ; jump if found overflow 
 		jmp Print_results                          ; Print_results
 
 
-	Negative_Mul:					               ; imul used in signed numbers
+	Negative_Mul:					                ; imul used in signed numbers
 		mov eax,operand1                           ; copy operand1 value --> eax
 		mov ebx,operand2                           ; copy operand2 value --> ebx
 		imul ebx                                   ; imul eax, ebx & store result in edx-eax
 		mov result, eax                      	   ; copy eax value --> result
+		jo ovr                                     ; jump if found overflow 
 		jmp Print_results                          ; Print_results
 					
 
@@ -128,17 +131,18 @@ main PROC
 		xor EDX, EDX  		 	; clear EdX => will have a most signtific 32bit from 64bit 
 		mov EAX, operand1		; get operands  which is 32bit 
 		mov EBX, operand2 		; make divisble by to EBX 
-		cdq						; sign extend 
+		cdq			        ; sign extend 
 		cmp EBX , 0h			; check the value of EBX is it zero will make an error 
 		je div_zero 
-		idiv EBX 			    ; make a div operation 
-		mov quotinent, EAX  	; save quotinent
+		idiv EBX 			; make a div operation 
+		mov quotinent, EAX  	        ; save quotinent
 		mov remainder, EDX 
 		mov result, EAX  
 		add EDX, EDX 			; double  remainder 
 		cmp EDX, EBX 			; comp with divisible if it is bigger it will round 
-		jb 1 				    ; itis not big enough sp jump the nexet instruction 
-		inc result
+		jb 1 				; itis not big enough sp jump the nexet instruction 
+		inc result 
+		jo ovr                          ; jump if found overflow 
 		jmp Print_results
 
 
@@ -149,13 +153,13 @@ main PROC
 		call WriteString
 		jmp op
 		
-    ovr:
+        ovr:
 		mov edx , offset oferflow    ; print message if found overflow
 		call WriteString
 		jmp quit
 
 	div_zero: 
-       	mov edx , offset divideZero    ; print message if found divide by zero 
+       	        mov edx , offset divideZero    ; print message if found divide by zero 
 		call WriteString
 		jmp quit
 
