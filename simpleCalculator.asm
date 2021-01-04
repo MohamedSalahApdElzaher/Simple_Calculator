@@ -19,10 +19,11 @@ remainder 			DWORD ?  ; for divisoin operator
 prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Arithmatic operation: ", 0
-resultPrompt		        BYTE "Result evaluation: ", 0
-subt                		BYTE "subtraction",0     ;for test
-msg                		BYTE "pleas enert valid opertor : ",0                      ;message for invalid operator
-oferflow                        BYTE "there are overflow damge pleas try again ",0         ; message for overflow
+resultPrompt		BYTE "Result evaluation: ", 0
+subt                BYTE "subtraction",0     ;for test
+msg                 BYTE "pleas enert valid opertor : ",0                      ;message for invalid operator
+oferflow            BYTE "there are overflow damge pleas try again ",0         ; message for overflow
+divideZero          BYTE "there is divide by zero happend",0         		   ; message for divide by zero 
 
 
 addition				BYTE '+', 0
@@ -63,28 +64,10 @@ main PROC
 		call	WriteString		; write the prompt3 guidance message
 		call	ReadChar		; read character from the user and store it in AL
 		mov	operation, al	        ; copy the character from AL to operation variable
-	; A comment block to guide you all
-	comment ! 
-		
-		Here you must check out the operation then redirect the program flow
-		to the suitable arithmatic block, and then from that block jump to print
-		results.
-
-		The following lines may help (I didn't test it)
-
-		cmp operation, '+'
-		jnz addition_block
-		cmp operation, '-'
-		jnz subtraction_block
-		cmp operation, '*'
-		jnz multiplication_block
-		cmp operation, '/'
-		jnz division_block
-		jmp quit
-
-		!
+	
+	
 	; Redirection to the  the needed operation
-        	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
+    	cmp al , 2Ah                          ; 2Ah is equivalent to * opertor in ASCII
 		je multiplication_block               ; jump to multiplication_block 
 		cmp al , 2Bh                          ; 2Bh is equivalent to + opertor in ASCII
 		je addition_block                     ; jump to addition_block 
@@ -150,39 +133,49 @@ main PROC
 			;1.b) will result quotinent 32bit in EAX and remainder in 32bit in EDX 
 				;* the CDQ convert doubleword to quadword 
 			;1.c) the reminder may takes two ways : A- round up B- convert to fractional number 
+			; 		we will use round up 
 		; 2. fix divide by zero 
-		; 3. divide overflow 
-		; 4. signed divide 
+		; 3. divide overflow => i think itis will not happend 
+		; 4. signed divide => error will happend when divide -8/4 and if it 8/-4 will not happend 
+		; 	it works fine when make sign extend cqd , why it works? 
 		
 
 	division_block: 
-		xor EDX, EDX  		 		; clear EdX 
-		mov EAX, operand1			; get operands 
-		mov EBX, operand2 
-		div EBX 
-		mov quotinent, EAX  			; save quotinent
-		mov result, EAX 
+		xor EDX, EDX  		 	; clear EdX => will have a most signtific 32bit from 64bit 
+		mov EAX, operand1		; get operands  which is 32bit 
+		mov EBX, operand2 		; make divisble by to EBX 
+		cdq						; sign extend 
+		cmp EBX , 0h			; check the value of EBX is it zero will make an error 
+		je div_zero 
+		idiv EBX 			    ; make a div operation 
+		mov quotinent, EAX  	; save quotinent
+		mov remainder, EDX 
+		mov result, EAX  
+		add EDX, EDX 			; double  remainder 
+		cmp EDX, EBX 			; comp with divisible if it is bigger it will round 
+		jb 1 				    ; itis not big enough sp jump the nexet instruction 
+		inc result
 		jmp Print_results
-		; xor EAX, EAX
-		; div EBX 				; genrate remainder 
-		; mov remainder, EAX   
 
 
+	;handling the errors that will happend 
+   	mas:                                    ; print message if the user enterd a invalid operator 
+		call Crlf
+		mov edx , offset msg
+		call WriteString
+		jmp op
+		
+    ovr:
+		mov edx , offset oferflow    ; print message if found overflow
+		call WriteString
+		jmp quit
+
+	div_zero: 
+       	mov edx , offset divideZero    ; print message if found divide by zero 
+		call WriteString
+		jmp quit
 
 
-	
-   	 mas:                                        ; print message if the user enterd a invalid operator 
-	        	call Crlf
-			mov edx , offset msg
-			call WriteString
-			jmp op
-			
-         ovr :
-	      		mov edx , offset oferflow    ; print message if found overflow
-			call WriteString
-			jmp quit
-
-       
        ; Print results
        
 	Print_results:
@@ -247,6 +240,8 @@ main PROC
 		jmp 	quit
 
 	
+
+
 
 	quit:
 		call	CrLf
