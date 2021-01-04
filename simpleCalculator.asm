@@ -102,11 +102,10 @@ main PROC
 					jo ovr                       ; jump if found overflow 
 					jmp Print_results            ; print resultes
 	subtraction_block:
-	                		mov eax,operand1 ;copy the first operand in eax
-					sub eax,operand2 ;subtract the second operand form the fisrt onr
-					mov result,eax   ;copy the subtraction result in the result
-					jmp print_result ; jump to print_result section
-	
+	                		mov eax , operand1 ;copy the first operand in eax
+					sub eax , operand2 ;subtract the second operand form the fisrt onr
+					mov result , eax   ;copy the subtraction result in the result
+					jmp Print_results  ;jump to print_result section
 	
 	; Mul operation	
         ; Check the number +ve or -ve (Note: need to be handled in a seprate block for all operations)
