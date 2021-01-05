@@ -12,26 +12,26 @@ directions			BYTE "Enter two numbers to evaluate:", 0
 operand1			DWORD ?
 operand2			DWORD ?
 operator			BYTE  ?
-result           	DWORD ?
+result           	        DWORD ?
 quotinent			DWORD ?  ; for divisoin operator 
 remainder 			DWORD ?  ; for divisoin operator 
 
 prompt1				BYTE "Enter the first number: ", 0
 prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Choose an arithmatic operation (+, -, *, /): ", 0
-resultPrompt		BYTE "Result evaluation: ", 0
+resultPrompt		        BYTE "Result evaluation: ", 0
 
-operator_msg        BYTE "Enter a valid opertor : ",0               ;message for invalid operator
-overflow_msg        BYTE "Overflow occures try again ",0   			; message for overflow
-zeroDiv_msg         BYTE "Division by zero is not valid, try again ... ",0         	; message for divide by zero 
+operator_msg       		BYTE "Enter a valid opertor : ",0               ;message for invalid operator
+overflow_msg        		BYTE "Overflow occures try again ",0   			; message for overflow
+zeroDiv_msg         		BYTE "Division by zero is not valid, try again ... ",0         	; message for divide by zero 
 
-overflow1 	    BYTE "overflow occurs in operand1, please enter smaller number", 0
-overflow2   	    BYTE "overflow occurs in operand2, please enter smaller number", 0
+overflow1 	   		BYTE "overflow occurs in operand1, please enter smaller number", 0
+overflow2   	   		BYTE "overflow occurs in operand2, please enter smaller number", 0
 		
 
 addition				BYTE '+', 0
 subtraction				BYTE '-', 0
-multiplication			BYTE '*', 0
+multiplication				BYTE '*', 0
 division				BYTE '/', 0
 equal_sign				BYTE '=', 0
 parth_1					BYTE '(', 0
@@ -92,9 +92,9 @@ main PROC
 	; addition opertion 
 
 	do_addition:
-		mov eax, operand2
+		mov eax, operand2            ;put num2 in eax
 		add eax , operand1           ; num1  + num2
-		mov result , eax
+		mov result , eax             ;copy the sum in result 
 		jo overflow                  ; jump if found overflow 
 		jmp print_results            ; print resultes
 
@@ -160,7 +160,7 @@ main PROC
 		call WriteString
 		jmp get_operator
 		
-    overflow:
+        overflow:
 		mov edx , offset overflow_msg    ; print message if overflow found
 		call WriteString
 		jmp quit
