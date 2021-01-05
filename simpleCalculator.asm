@@ -173,7 +173,7 @@ main PROC
 
 		
 	overflowBlock2:			      ; if overflow occurs in operand 1
-		mov edx , offset overflow2    ; ask the user to enter smaller number
+		mov edx , offset overflow    ; ask the user to enter smaller number
 		call WriteString
 		jmp quit
 
