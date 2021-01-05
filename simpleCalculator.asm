@@ -21,8 +21,8 @@ prompt2				BYTE "Enter the second number: ", 0
 prompt3				BYTE "Choose an arithmatic operation (+, -, *, /): ", 0
 resultPrompt		        BYTE "Result evaluation: ", 0
 
-operator_msg       		BYTE "Enter a valid opertor : ",0               ;message for invalid operator
-overflow_msg        		BYTE "Overflow occures try again ",0   			; message for overflow
+operator_msg       		BYTE "Enter a valid opertor : ",0                               ;message for invalid operator
+overflow_msg        		BYTE "Overflow occures try again ",0   			        ; message for overflow
 zeroDiv_msg         		BYTE "Division by zero is not valid, try again ... ",0         	; message for divide by zero 
 
 overflow1 	   		BYTE "overflow occurs in operand1, please enter smaller number", 0
@@ -117,10 +117,10 @@ main PROC
     do_multiplication:
 		mov ebx , operand1
 		cmp ebx, 0
-		jl _Mul   		               ; Jump if less    
+		jl _Mul   		                   ; Jump if less    
 		mov ebx , operand2
 		cmp ebx, 0	
-		jl _Mul   		               ; Jump if less 
+		jl _Mul   		                   ; Jump if less 
 	
 
 	_Mul:				                   ; imul used in signed numbers
@@ -148,13 +148,13 @@ main PROC
 		jb skip1 			; itis not big enough sp jump the nexet instruction 
 		inc result 
 	skip1:
-		jo overflow             ; jump if found overflow 
+		jo overflow                     ; jump if found overflow 
 		jmp print_results
 
 
 	; handling exceptions 
 
-   	invalid_operator:                    ; print message if the user enterd a invalid operator 
+   	invalid_operator:                    	; print message if the user enterd a invalid operator 
 		call Crlf
 		mov edx , offset operator_msg
 		call WriteString
@@ -166,21 +166,21 @@ main PROC
 		jmp quit
 
 	
-	overflowBlock1:		              ; if overflow occurs in operand 1
-		mov edx , offset overflow1    ; ask the user to enter smaller number
+	overflowBlock1:		             	 ; if overflow occurs in operand 1
+		mov edx , offset overflow1    	 ; ask the user to enter smaller number
 		call WriteString			 
-		jmp get_operand1	      ; return the user back to the get_operand1 section 
+		jmp get_operand1	      	 ; return the user back to the get_operand1 section 
 
 		
-	overflowBlock2:			      ; if overflow occurs in operand 1
-		mov edx , offset overflow2    ; ask the user to enter smaller number
+	overflowBlock2:			      	 ; if overflow occurs in operand 1
+		mov edx , offset overflow2   	 ; ask the user to enter smaller number
 		call WriteString
-		jmp get_operand2	      ; return the user back to the get_operand2 section
+		jmp get_operand2	      	 ; return the user back to the get_operand2 section
 
 	div_zero: 
        	call Crlf
 		call Crlf
-		mov edx , offset zeroDiv_msg    ; print message if found divide by zero 
+		mov edx , offset zeroDiv_msg     ; print message if found divide by zero 
 		call WriteString
 		call Crlf
 		call Crlf
