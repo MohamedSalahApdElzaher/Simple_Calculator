@@ -120,7 +120,7 @@ main PROC
 		jl _Mul   		               ; Jump if less    
 		mov ebx , operand2
 		cmp ebx, 0	
-		jl _Mul   		                ; Jump if less 
+		jl _Mul   		               ; Jump if less 
 	
 
 	_Mul:				                   ; imul used in signed numbers
@@ -173,7 +173,7 @@ main PROC
 
 		
 	overflowBlock2:			      ; if overflow occurs in operand 1
-		mov edx , offset overflow     ; ask the user to enter smaller number
+		mov edx , offset overflow2    ; ask the user to enter smaller number
 		call WriteString
 		jmp get_operand2	      ; return the user back to the get_operand2 section
 
