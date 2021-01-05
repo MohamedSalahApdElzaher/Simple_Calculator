@@ -26,7 +26,7 @@ overflow_msg        BYTE "Overflow occures try again ",0   			; message for over
 zeroDiv_msg         BYTE "Division by zero is not valid, try again ... ",0         	; message for divide by zero 
 
 overflow1 	    BYTE "overflow occurs in operand1, please enter smaller number", 0
-overflow1   	    BYTE "overflow occurs in operand2, please enter smaller number", 0
+overflow2   	BYTE "overflow occurs in operand2, please enter smaller number", 0
 		
 
 addition				BYTE '+', 0
@@ -56,7 +56,7 @@ main PROC
 		call	WriteString		; write the prompt1 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
 		mov	operand1, eax	        ; copy EAX value to the first operand
-		jo overflow1			; jump to overflow2 section if there is overflow in operand1
+		jo overflowBlock1			; jump to overflow2 section if there is overflow in operand1
 	; Ask and get the arithmatic operator
 	get_operator:
 		lea	edx, prompt3
@@ -71,7 +71,7 @@ main PROC
 		call	WriteString		; write the prompt2 guidance message
 		call	ReadInt			; read 32-bit signed decimal integer from the user and store it in EAX
 		mov	operand2, eax	    	; copy EAX value to the second operand
-		jo overflow2			; jump to overflow2 section if there is overflow in operand2
+		jo overflowBlock2			; jump to overflow2 section if there is overflow in operand2
 
 
 	
@@ -166,14 +166,14 @@ main PROC
 		jmp quit
 
 	
-	overflow1:		              ; if overflow occurs in operand 1
+	overflowBlock1:		              ; if overflow occurs in operand 1
 		mov edx , offset overflow1    ; ask the user to enter smaller number
 		call WriteString			 
 		jmp quit
 
 		
-	overflow2:			      ; if overflow occurs in operand 1
-		mov edx , offset overflow1    ; ask the user to enter smaller number
+	overflowBlock2:			      ; if overflow occurs in operand 1
+		mov edx , offset overflow2    ; ask the user to enter smaller number
 		call WriteString
 		jmp quit
 
