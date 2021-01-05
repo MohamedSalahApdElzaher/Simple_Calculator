@@ -26,7 +26,7 @@ overflow_msg        BYTE "Overflow occures try again ",0   			; message for over
 zeroDiv_msg         BYTE "Division by zero is not valid, try again ... ",0         	; message for divide by zero 
 
 overflow1 	    BYTE "overflow occurs in operand1, please enter smaller number", 0
-overflow2   	BYTE "overflow occurs in operand2, please enter smaller number", 0
+overflow2   	    BYTE "overflow occurs in operand2, please enter smaller number", 0
 		
 
 addition				BYTE '+', 0
@@ -56,13 +56,13 @@ main PROC
 		call	WriteString		; write the prompt1 guidance message
 		call	ReadInt			; read 32-bit integer from the user and store it in EAX
 		mov	operand1, eax	        ; copy EAX value to the first operand
-		jo overflowBlock1			; jump to overflow2 section if there is overflow in operand1
+		jo 	overflowBlock1		; jump to overflow2 section if there is overflow in operand1
 	; Ask and get the arithmatic operator
 	get_operator:
 		lea	edx, prompt3
 		call	WriteString		; write the prompt3 guidance message
 		call	ReadChar		; read the operator from the user and store it in AL
-		mov	operator, al	    ; copy the character from AL to operator variable
+		mov	operator, al		; copy the character from AL to operator variable
 		call	CrLf
 
 	; Ask and get the second number
@@ -71,7 +71,7 @@ main PROC
 		call	WriteString		; write the prompt2 guidance message
 		call	ReadInt			; read 32-bit signed decimal integer from the user and store it in EAX
 		mov	operand2, eax	    	; copy EAX value to the second operand
-		jo overflowBlock2			; jump to overflow2 section if there is overflow in operand2
+		jo 	overflowBlock2		; jump to overflow2 section if there is overflow in operand2
 
 
 	
@@ -169,13 +169,13 @@ main PROC
 	overflowBlock1:		              ; if overflow occurs in operand 1
 		mov edx , offset overflow1    ; ask the user to enter smaller number
 		call WriteString			 
-		jmp quit
+		jmp get_operand1	      ; return the user back to the get_operand1 section 
 
 		
 	overflowBlock2:			      ; if overflow occurs in operand 1
-		mov edx , offset overflow    ; ask the user to enter smaller number
+		mov edx , offset overflow     ; ask the user to enter smaller number
 		call WriteString
-		jmp quit
+		jmp get_operand2	      ; return the user back to the get_operand2 section
 
 	div_zero: 
        	call Crlf
