@@ -27,7 +27,7 @@ resultPrompt		DB "Evaluation result: ", 0
 
 operand_msg			DB " < invalid number, try again ... > ",0				; invalid operand exception message
 operator_msg        DB " < invalid opertor, try again ... > ", 0               			; invalid operator exception message
-overflow_msg0       DB " < Overflow occures try again > ", 0   						; overflow exception message
+overflow_msg0       DB " < Result is too large to fit, try again > ", 0   						; overflow exception message
 overflow_msg1 	    DB " < First number is large to fit, please enter smaller one > ", 0
 overflow_msg2   	DB " < Second number is large to fit, please enter smaller one > ", 0
 zeroDiv_msg         DB " < Division by zero is not valid, try again ... > ", 0         ; division by zero exception message
@@ -123,7 +123,7 @@ main PROC
 		mov eax, operand2
 		add eax , operand1           ; num1  + num2
 		mov result , eax
-		;jo overflow                  ; jump if found overflow 
+		jo overflowBlock0                  ; jump if found overflow 
 		jmp print_results            ; print resultes
 
 	; subtraction opertion 
@@ -132,7 +132,7 @@ main PROC
 		mov eax , operand1 	     	 ; copy the first operand in eax
 		sub eax , operand2           ; subtract the second operand form the fisrt operand
 		mov result , eax             ; copy the subtraction result in the result
-		;jo overflow                  ; jump to overflow section if overflow found
+		jo overflowBlock0                  ; jump to overflow section if overflow found
 		jmp print_results            ; else jump to print_result section
 	
 	; multiplication operation	
@@ -155,7 +155,7 @@ main PROC
 		mov ebx,operand2                           ; copy operand2 value --> ebx
 		imul ebx                                   ; imul eax, ebx & store result in edx-eax
 		mov result, eax                      	   ; copy eax value --> result
-		;jo overflow                                ; jump if overflow found
+		jo overflowBlock0                                ; jump if overflow found
 		jmp print_results                          ; jump to print_results
 					
 
@@ -175,7 +175,7 @@ main PROC
 		jb skip1 					; itis not big enough sp jump the nexet instruction 
 		inc result 
 	skip1:
-		;jo overflow             ; jump if found overflow 
+		jo overflowBlock0             ; jump if found overflow 
 		jmp print_results
 
 
@@ -280,6 +280,14 @@ main PROC
 			call	CrLf
 			call	CrLf
 			jmp get_operand2
+
+	overflowBlock0:		              	; if overflow occurs in results
+		call Crlf
+		mov edx , offset overflow_msg0    	
+		call WriteString
+		call Crlf			 
+		jmp quit	      				; exit the program 
+
 
 	overflowBlock1:		              		; if overflow occurs in operand 1
 		call Crlf
