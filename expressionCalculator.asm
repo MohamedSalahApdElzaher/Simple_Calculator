@@ -8,30 +8,27 @@ includelib \masm32\lib\user32.lib
 .data
 
 calcTitle			DB "  *************  Start the assembly expression calculator  *************  ", 0
-prompt1				DB "Enter expression of max 5 operands (eg. 2 + 3 * 4 / 6 - 8 ): ", 0
+prompt1				DB "Enter expression to evaluate (eg. 2 + 3 * 4): ", 0
 resultPrompt1		DB "Evaluation result of the expression ", 0
 resultPrompt2		DB " is ", 0
 parth_1				DB "( ", 0
 parth_2				DB " )", 0
-space				DB " ", 0
 
-expression			DB 31 DUP(?)			; array for 30 characters
+expression			DB 331 DUP(?)			; array for maximum 150 characters to hold the expression
+expression_length	DD	?
+expression_end	DD	?					; counter to know if the expression end reached
 
-operand1_string			DB 16 dup (?)
-operand2_string			DB 16 dup (?)
-operand3_string			DB 16 dup (?)
-operand4_string			DB 16 dup (?)
-operand5_string			DB 16 dup (?)
+string_operand		DB 16 dup (?)
+operand_len			DD	?
 
-operators				DB 5 dup (?)
+operators_array		DB 31 dup (?)		; maximum number of operators in the expression is 50
+operators_count		DD	?
 
-Operand1		DD ?					; first operand
-Operand2		DD ?					; second operand
-Operand3		DD ?					; third operand
-Operand4		DD ?					; fourth operand
-Operand5		DD ?					; fifth operand
+operands_array		DD	32  dup (?)		; maximum number of operands in the expression is 51
+operands_count		DD	?
 
-result          DD ?					; result
+
+result          	DD ?					; result
 
 		; .code is for the executable part of the program
 .code
@@ -48,141 +45,88 @@ main PROC
 		lea		edx, prompt1
 		call	WriteString
 		lea  edx, expression
-		mov  ecx,30
+		mov  ecx,330				; stop reading when user clicks enter
 		call ReadString
 		call	CrLf
 
 	; excluding operands and operators from the expression (eg. 2 + 3 * 4)
 
-	get_operand1:
+		lea  	edx, expression			; get the length of the expression 
+        call 	StrLength
+        mov  	expression_length, eax
+		mov  	expression_end, eax		; initialize the expression end counter with expression length
 
-		lea		ebx, expression
-		mov 	edi, 0			; counter for operand1 string
+	get_operands:
+
+		mov		operands_count, 0				; initialize operands count
+		mov		operators_count, 0				; initialize operators count
+		lea		ebx, expression					; get the base address of the expression character array
+		jmp		load_new_operand
+
+		load_new_operator:
+
+		mov		al , [ebx]						; save the operator
+		mov		edx, operators_count
+		mov	operators_array[edx], al
+		inc 	operators_count					; increment  operators_array counter
+		dec		expression_end
+
+		;	exit if the expression length reached
+		cmp 	expression_end, 0	
+		je		print_results
+
+		inc		ebx
+
+
+		load_new_operand:			; save the operator then load an operand
+
+		mov 	edi, 0				; counter for an operand string
 		Loop1:
 		mov		al, [ebx]
 		cmp		al, ' ' 
-		je		continue1		
-		call 	IsDigit				
-		jnz	 	get_operand2
+		je		continue		
+		call 	IsDigit				; ( 20 + 5 )
+		jnz	 	parse_operand		; jump to parse the loaded operand
 		mov		al , [ebx]
-		mov		operand1_string[edi], al
+		mov		string_operand[edi], al
 		inc		edi
-		continue1:
+		continue:
+		dec		expression_end
+		;	exit if the expression length reached
+		cmp 	expression_end, 0
+		je		parse_operand
 		inc		ebx
 		jmp		Loop1
 
-	get_operand2:
+		parse_operand:
 
-		mov 	edi, 0			; counter for operand2 string
-		mov 	edx, 0			; initialized counter for operators string
-		mov		al , [ebx]
-		mov	operators[edx], al
-		inc		ebx
-		Loop2:
-		mov		al, [ebx]
-		cmp		al, ' ' 
-		je		continue2 		
-		call 	IsDigit				
-		jnz	 	get_operand3
-		mov		al , [ebx]
-		mov		operand2_string[edi], al
-		inc		edi
-		continue2:
-		inc		ebx
-		jmp		Loop2
+		mov		al, ' '						; space indicating the end of the number to be parsed
+		mov		string_operand[edi], al
 
-	get_operand3:
+		lea  	edx, string_operand			; get the length of the string operand
+        call 	StrLength
+        mov  	operand_len, eax
 
-		mov 	edi, 0			; counter for operand3 string
-		inc 	edx				; increment  operators counter
-		mov		al , [ebx]
-		mov	operators[edx], al
-		inc		ebx
-		Loop3:
-		mov		al, [ebx]
-		cmp		al, ' ' 
-		je		continue3 		
-		call 	IsDigit				
-		jnz	 	get_operand4
-		mov		al , [ebx]
-		mov		operand3_string[edi], al
-		inc		edi
-		continue3:
-		inc		ebx
-		jmp		Loop3
+		mov   	ecx, operand_len
+    	call  	ParseInteger32				; change the string operand to integer value
 
-	get_operand4:
+		mov		edx, operands_count				; store parsed values inside the array
+		mov		operands_array[edx], eax	 
+		inc		operands_count
 
-		mov 	edi, 0			; counter for operand4 string
-		inc 	edx				; increment  operators counter
-		mov		al , [ebx]
-		mov	operators[edx], al
-		inc		ebx
-		Loop4:
-		mov		al, [ebx]
-		cmp		al, ' ' 
-		je		continue4 		
-		call 	IsDigit				
-		jnz	 	get_operand5
-		mov		al , [ebx]
-		mov		operand4_string[edi], al
-		inc		edi
-		continue4:
-		inc		ebx
-		jmp		Loop4
+		; just for testing i'll remove it later -----
+		mov		eax, operands_array[edx]
+		call	WriteInt	
+		call	CrLf
+		; ---------
 
-	get_operand5:
+		; exit if the expression end reached
+		cmp 	expression_end, 0
+		je		print_results
 
-		mov 	edi, 0			; counter for operand5 string
-		inc 	edx				; increment  operators counter
-		mov		al , [ebx]
-		mov	operators[edx], al
-		inc		ebx
-		Loop5:
-		mov		al, [ebx]
-		cmp		al, ' ' 
-		je		continue5 		
-		call 	IsDigit				
-		jnz	 	parse_operands
-		mov		al , [ebx]
-		mov		operand5_string[edi], al
-		inc		edi
-		continue5:
-		inc		ebx
-		jmp		Loop5
+		jmp 	load_new_operator
 
-	parse_operands:
-	lea  	edx, operand1_string		; load operand1 string address 
-    call 	StrLength					; get string length
-	mov   ecx, eax						; store the length in the counter ecx
-    call  ParseInteger32				; parsing the string to integer value
-	mov		operand1, eax	    		; copy EAX value to the first operand1
-
-	lea  	edx, operand2_string		; same steps for operand2 
-    call 	StrLength					
-	mov   	ecx, eax					
-    call  	ParseInteger32				
-	mov		operand2, eax	    		
-
-	lea  	edx, operand3_string		; same steps for operand3
-    call 	StrLength					
-	mov   	ecx, eax					
-    call  	ParseInteger32				
-	mov		operand3, eax	    		
-
-	lea  	edx, operand4_string		; same steps for operand4 
-    call 	StrLength					
-	mov   	ecx, eax						
-    call  	ParseInteger32				
-	mov		operand4, eax	    		
-
-	lea  	edx, operand5_string		; same steps for operand5
-    call 	StrLength					
-	mov   	ecx, eax					
-    call  	ParseInteger32				
-	mov		operand5, eax	    		
-
-	; Write the evaluation results back to user parth_1
+	; Write the evaluation results back to user
 
 	print_results:
 		lea		edx, resultPrompt1
@@ -199,16 +143,13 @@ main PROC
 
 		lea		edx, resultPrompt2
 		call	WriteString	
+		
 
-		; only for testing
-
-		lea		edx, operators
+		lea		edx, operators_array
 		call	WriteString	
-
-		lea		edx, space
-		call	WriteString
-
-		mov		eax, operand5
+		call CrLf
+		call CrLf
+		mov		eax, expression_length
 		call	WriteInt	
 		call	CrLf
 
