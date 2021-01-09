@@ -36,6 +36,7 @@ result          		DD ?					; result
 temp 				DD ?
 number1 			DD 0	
 number2 			DD 0
+current_operator		DB ?
 
 		; .code is for the executable part of the program
 .code
