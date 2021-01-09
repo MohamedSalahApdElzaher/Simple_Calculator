@@ -42,7 +42,7 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 
 - **Invalid operator**
 
-> **Example 2:** `Enter the first number: 5`
+> **Example:** `Enter the first number: 5`
 > 
 > `Choose an operation (+, -, *, /): h `
 > 
@@ -69,7 +69,7 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 
 > **Example 1:** `Enter the first number: 3333333333`
 >
-> **Output:** `< First number is large to fit, please enter smaller one >`
+> `< First number is large to fit, please enter smaller one >`
 >
 > **Output:** `Enter the first number:`
 
