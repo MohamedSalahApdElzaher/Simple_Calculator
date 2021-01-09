@@ -9,26 +9,26 @@ includelib \masm32\lib\user32.lib
 
 calcTitle			DB "  *************  Start the assembly expression calculator  *************  ", 0
 prompt1				DB "Enter expression to evaluate (eg. 2 + 3 * 4): ", 0
-resultPrompt1		DB "Evaluation result of the expression ", 0
-resultPrompt2		DB " is ", 0
+resultPrompt1			DB "Evaluation result of the expression ", 0
+resultPrompt2			DB " is ", 0
 parth_1				DB "( ", 0
 parth_2				DB " )", 0
 
 expression			DB 331 DUP(?)			; array for maximum 150 characters to hold the expression
-expression_length	DD	?
-expression_end	DD	?					; counter to know if the expression end reached
+expression_length		DD	?
+expression_end			DD	?					; counter to know if the expression end reached
 
-string_operand		DB 16 dup (?)
+string_operand			DB 16 dup (?)
 operand_len			DD	?
 
-operators_array		DB 31 dup (?)		; maximum number of operators in the expression is 50
-operators_count		DD	?
+operators_array			DB 31 dup (?)		; maximum number of operators in the expression is 50
+operators_count			DD	?
 
-operands_array		DD	32  dup (?)		; maximum number of operands in the expression is 51
-operands_count		DD	?
+operands_array			DD	32  dup (?)		; maximum number of operands in the expression is 51
+operands_count			DD	?
 
 
-result          	DD ?					; result
+result          		DD ?					; result
 
 		; .code is for the executable part of the program
 .code
@@ -73,7 +73,7 @@ main PROC
 
 		;	exit if the expression length reached
 		cmp 	expression_end, 0	
-		je		print_results
+		je		start_evaluation
 
 		inc		ebx
 
@@ -92,8 +92,7 @@ main PROC
 		inc		edi
 		continue:
 		dec		expression_end
-		;	exit if the expression length reached
-		cmp 	expression_end, 0
+		cmp 		expression_end, 0
 		je		parse_operand
 		inc		ebx
 		jmp		Loop1
@@ -114,18 +113,22 @@ main PROC
 		mov		operands_array[edx], eax	 
 		inc		operands_count
 
-		; just for testing i'll remove it later -----
-		mov		eax, operands_array[edx]
-		call	WriteInt	
-		call	CrLf
-		; ---------
-
 		; exit if the expression end reached
 		cmp 	expression_end, 0
-		je		print_results
+		je		start_evaluation
 
 		jmp 	load_new_operator
+		
+start_evaluation:
 
+	mov	edx, operators_count
+	mov	operators_array[edx], '$'
+	
+	; continue writing your code here
+	
+	
+	
+	
 	; Write the evaluation results back to user
 
 	print_results:
