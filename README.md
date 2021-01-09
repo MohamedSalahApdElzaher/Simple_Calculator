@@ -1,10 +1,18 @@
 # **Simple Assembly Calculator**
 
-  ## A. Two operands simple calculator
+We introduce to you two versions of simple assembly calculator:
 
-   ### Introduction
+### A. Two-operand simple calculator
+### B. Expression-solver simple calculator
 
-The two operands simple calculator is an assembly program that solves algebraic operations.
+Let's go in some details <br/>
+
+
+  ## A. Two-operand simple calculator
+
+### Introduction
+
+The two-operand simple calculator is an assembly program that solves algebraic operations.
 
 ### Features and Functionalities
 
@@ -17,7 +25,6 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 - **Multiplication operation**
 
 - **Division operation**
-
 
 
 ### Exception Handling
@@ -135,7 +142,29 @@ To be filled later
 
 To be filled later
 
+##  B. Expression-solver simple calculator
 
+### Introduction
+
+The expression-solver calculator is an assembly program that solves algebraic expressions.
+
+### Features and Functionalities
+
+Evaluate basic expressions using symbols ('+' '-' '*' '/' ).
+
+> **Example:** `Enter expression to evaluate (eg. 2 + 3 * 4): 5+2*10-6+9/3*100+99-21-2+4*5 `
+>
+> **Output:** `Evaluation result of the expression (5+2*10-6+9/3*100+99-21-2+4*5) is +415 `
+
+### Error Handling
+
+To be filled later
+
+### Limitations
+
+To be filled later
+
+### Notes
 
 ## Resources
 
