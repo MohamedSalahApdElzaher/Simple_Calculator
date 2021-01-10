@@ -7,18 +7,19 @@ includelib \masm32\lib\user32.lib
 
 .data
 
-calcTitle			DB "  *  Start the assembly expression calculator  *  ", 0
-prompt1				DB "Enter expression to evaluate (eg. 2 + 3 * 4): ", 0
+startTitle			DB "  **  Start the assembly expression-solver calculator  **  ", 0
+endTitle			DB "  **  Thanks for using our expression-solver calculator  **  ", 0
+
+prompt1				DB "Enter expression (eg. 2+3*4) and (Q/q) to exit: ", 0
 resultPrompt1		DB "Evaluation result of the expression ", 0
 resultPrompt2		DB " is ", 0
 parth_1				DB "( ", 0
 parth_2				DB " )", 0
 
-overflow_msg0	  			DB " < invalid number in the expression, try again ... > ", 0
+overflow_msg0	  			DB " < Invalid number in the expression, try again ... > ", 0
 overflow_msg1	  			DB " < Incorrect result due to overflow, try again > ", 0
-invalid_expression_msg	  	DB " < invalid expression, try again ... > ", 0
-
-zeroDiv_msg         DB " < Division by zero is not valid > ", 0         ; division by zero exception message
+invalid_expression_msg	  	DB " < Invalid expression, try again ... > ", 0
+zeroDiv_msg         		DB " < Division by zero is not valid > ", 0         ; division by zero exception message
 
 expression				DB 331 DUP(?)			; array for maximum 150 characters to hold the expression
 expression_length		DD	?
@@ -45,7 +46,7 @@ number2 				DD 0				; hold the secound number
 main PROC
 	; print calculator title
 		call	CrLf
-		mov		edx, OFFSET calcTitle
+		mov		edx, OFFSET startTitle
 		call	WriteString
 		call	CrLf
 		call	CrLf
@@ -59,7 +60,7 @@ main PROC
 		call 	ReadString
 		call	CrLf
 
-	; excluding operands and operators from the expression (eg. 2 + 3 * 4)
+	; excluding operands and operators from the expression (eg. 2+3*4)
 
 		lea  	edx, expression			; get the length of the expression 
         call 	StrLength
@@ -86,6 +87,10 @@ main PROC
 		;	exit if the expression length reached
 		cmp 	expression_end, 0	
 		je		start_evaluation
+
+		mov		al, [ebx+1]
+		call 	IsDigit				
+		jnz	 	invalid_expression		; jump to invalid expression if (2**2)	
 
 		inc		ebx
 
@@ -120,7 +125,7 @@ main PROC
 
 		mov   	ecx, operand_len
     	call  	ParseInteger32				; change the string operand to integer value
-		jo		input_overflow				
+		jo		input_overflow
 
 		mov		edx, operands_index				; store parsed values inside the array
 		mov		operands_array[edx], eax	 
@@ -222,7 +227,7 @@ div_zero:   ; block for divisoin by zero
 		call 	WriteString
 		call 	Crlf
 		call 	Crlf
-		jmp 	quit 
+		jmp 	read_expression 
 
 expression_validity:
 
@@ -274,6 +279,7 @@ result_overflow:
 		call 	Crlf
 		call 	Crlf
 		jmp 	read_expression 			; ask the user to enter another expression
+
 	; Write the evaluation results back to user
 
 	print_results:
@@ -295,8 +301,13 @@ result_overflow:
 		mov		eax, number1			; here to print the answer 
 		call	WriteInt	
 		call	CrLf
+		call	CrLf
+
+		jmp		read_expression			; jmp to repeat calulations
 
 	quit:
+		lea		edx, endTitle
+		call	WriteString	
 		call	CrLf
 		exit	
 
