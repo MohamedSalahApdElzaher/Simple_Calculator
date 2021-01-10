@@ -17,6 +17,11 @@ The two-operand simple calculator is an assembly program that solves algebraic o
 ### Features and Functionalities
 
 Calculate basic four operations using symbols ( + , - , * , / ).
+<br/>
+    
+- **Algorithm description:**
+
+<br/>
 
 - **Addition operation**
 
@@ -151,6 +156,11 @@ The expression-solver calculator is an assembly program that solves algebraic ex
 ### Features and Functionalities
 
 Evaluate basic expressions using symbols ('+' '-' '*' '/' ).
+<br/>
+    
+- **Algorithm description:**
+
+<br/>
 
 > **Example:** `Enter expression to evaluate (eg. 2 + 3 * 4): 5+2*10-6+9/3*100+99-21-2+4*5 `
 >
