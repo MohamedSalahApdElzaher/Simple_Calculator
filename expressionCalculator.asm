@@ -227,7 +227,7 @@ div_zero:   ; block for divisoin by zero
 		call 	WriteString
 		call 	Crlf
 		call 	Crlf
-		jmp 	read_expression 
+		jmp 	quit 
 
 expression_validity:
 
@@ -278,7 +278,7 @@ result_overflow:
 		call 	WriteString
 		call 	Crlf
 		call 	Crlf
-		jmp 	read_expression 			; ask the user to enter another expression
+		jmp 	quit 			; ask the user to enter another expression
 
 	; Write the evaluation results back to user
 
@@ -303,7 +303,7 @@ result_overflow:
 		call	CrLf
 		call	CrLf
 
-		jmp		read_expression			; jmp to repeat calulations
+		;jmp		read_expression			; jmp to repeat calulations
 
 	quit:
 		lea	edx, endTitle
