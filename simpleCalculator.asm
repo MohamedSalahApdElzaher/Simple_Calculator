@@ -6,7 +6,8 @@ includelib \masm32\lib\user32.lib
 		; .data is used for declaring and defining variables
 .data
 
-calcTitle			DB "  *************  Start the simple assembly calculator  *************  ", 0
+startTitle			DB "  *****  Start the two-operand assembly calculator  *****  ", 0
+endTitle			DB "  *****  Thanks for using our two-operand assembly calculator  *****  ", 0
 
 operand1_string			DB 16 dup (?)
 operand2_string			DB 16 dup (?)
@@ -16,23 +17,20 @@ operand2_len			DD	?
 operand1			DD ?
 operand2			DD ?
 operator			DB  ?
+
 result           	DD ?
-quotinent			DD ?  ; for division operator 
-remainder 			DD ?  ; for division operator 
 
-prompt1				DB "Enter the first number or q for quit: ", 0
-prompt2				DB "Enter the second number: ", 0
-prompt3				DB "Choose an operation (+, -, *, /): ", 0
-resultPrompt		DB "Evaluation result: ", 0
+prompt1				DB "Enter the first number, or (Q/q) to exit: ", 0
+prompt2				DB "Enter the second number, or (Q/q) to exit: ", 0
+prompt3				DB "Choose an operation (+, -, *, /), or (Q/q) to exit: ", 0
+resultPrompt		DB "Evaluation result is: ", 0
 
-operand_msg			DB " < invalid number, try again ... > ",0				; invalid operand exception message
-operator_msg        DB " < invalid opertor, try again ... > ", 0               			; invalid operator exception message
+operand_msg			DB " < Invalid number, try again ... > ",0				; invalid operand exception message
+operator_msg        DB " < Invalid opertor, try again ... > ", 0               			; invalid operator exception message
 overflow_msg0       DB " < Result is too large to fit, try again > ", 0   						; overflow exception message
 overflow_msg1 	    DB " < First number is large to fit, please enter smaller one > ", 0
 overflow_msg2   	DB " < Second number is large to fit, please enter smaller one > ", 0
 zeroDiv_msg         DB " < Division by zero is not valid, try again ... > ", 0         ; division by zero exception message
-
-
 
 addition				DB '+', 0
 subtraction				DB '-', 0
@@ -48,9 +46,10 @@ space					DB ' ', 0
 
 main PROC
 
+	start:
 	; Printing the calculator title
 		call	CrLf				; spacing for readability
-		lea	edx, calcTitle		    ; copy the address of caltitle to EDX register
+		lea		edx, startTitle		    ; copy the address of caltitle to EDX register
 		call	WriteString			; write the calculator title
 		call	CrLf	
 		call	CrLf							
@@ -67,20 +66,18 @@ main PROC
 		
 		parsing_operand1:
 
-		mov   ecx,operand1_len
-    	call  ParseInteger32
+		mov   	ecx, operand1_len
+    	call  	ParseInteger32
 		mov		operand1, eax	    ; copy EAX value to the first operand
-
-		jo 	overflowBlock1		; jump to overflowBlock1 section if there is overflow in operand1
-
+		jo 		operand1_overflow		; jump to operand1_overflow section if there is overflow in operand1
 
 	; Ask and get the arithmatic operator
 	get_operator:
 		call	CrLf							
-		lea	edx, prompt3
+		lea		edx, prompt3
 		call	WriteString				; write the prompt3 guidance message
 		call	ReadChar				; read the operator from the user and store it in AL
-		mov	operator, al	    		; copy the character from AL to operator variable
+		mov		operator, al	    	; copy the character from AL to operator variable
 	
 		jmp check_operator_validity		; check if the operator is a valid 
 
@@ -102,7 +99,7 @@ main PROC
     	call  ParseInteger32
 		mov		operand2, eax	    ; copy EAX value to the first operand
 
-		jo 	overflowBlock2		; jump to overflowBlock2 section if there is overflow in operand2
+		jo 	operand2_overflow		; jump to operand2_overflow section if there is overflow in operand2
 
 		call	CrLf
 	
@@ -123,7 +120,7 @@ main PROC
 		mov eax, operand2
 		add eax , operand1           ; num1  + num2
 		mov result , eax
-		jo overflowBlock0                  ; jump if found overflow 
+		jo result_overflow            ; jump if found overflow 
 		jmp print_results            ; print resultes
 
 	; subtraction opertion 
@@ -132,7 +129,7 @@ main PROC
 		mov eax , operand1 	     	 ; copy the first operand in eax
 		sub eax , operand2           ; subtract the second operand form the fisrt operand
 		mov result , eax             ; copy the subtraction result in the result
-		jo overflowBlock0                  ; jump to overflow section if overflow found
+		jo result_overflow                  ; jump to overflow section if overflow found
 		jmp print_results            ; else jump to print_result section
 	
 	; multiplication operation	
@@ -150,13 +147,13 @@ main PROC
 		jl _Mul   		                ; Jump if less 
 	
 
-	_Mul:				                   ; imul used in signed numbers
-		mov eax,operand1                           ; copy operand1 value --> eax
-		mov ebx,operand2                           ; copy operand2 value --> ebx
-		imul ebx                                   ; imul eax, ebx & store result in edx-eax
-		mov result, eax                      	   ; copy eax value --> result
-		jo overflowBlock0                                ; jump if overflow found
-		jmp print_results                          ; jump to print_results
+	_Mul:				          ; imul used in signed numbers
+		mov eax,operand1          ; copy operand1 value --> eax
+		mov ebx,operand2          ; copy operand2 value --> ebx
+		imul ebx                  ; imul eax, ebx & store result in edx-eax
+		mov result, eax           ; copy eax value --> result
+		jo result_overflow         ; jump if overflow found
+		jmp print_results         ; jump to print_results
 					
 
 	do_division: 
@@ -165,19 +162,10 @@ main PROC
 		mov EBX, operand2 		; make divisble by to EBX 
 		cdq			        	; sign extend 
 		cmp EBX , 0h			; check the value of EBX is it zero will make an error 
-		je div_zero 
+		je division_by_zero 
 		idiv EBX 				; make a div operator 
-		mov quotinent, EAX		; save quotinent
-		mov remainder, EDX 
-		mov result, EAX  
-		add EDX, EDX 			; double  remainder 
-		cmp EDX, EBX 			; comp with divisible if it is bigger it will round 
-		jb skip1				; itis not big enough sp jump the nexet instruction 
-		inc result 
-	skip1:
-		jo overflowBlock0             ; jump if found overflow 
+		mov result, EAX   
 		jmp print_results
-
 
 	; handling exceptions 
 
@@ -187,12 +175,13 @@ main PROC
         call 	StrLength
         mov  	operand1_len,eax
 
-		mov		al, operand1_string			; check if the operand starts with a sign
+		mov		al, operand1_string			
 		cmp 	al,'q'
 		je		quit	
 		cmp 	al,'Q'
-		je		quit	
-		cmp		al, '+'
+		je		quit
+
+		cmp		al, '+'						; check if the operand starts with a sign
 		je		sign_found1
 		cmp		al, '-'
 		je		sign_found1
@@ -226,14 +215,20 @@ main PROC
 			jmp get_operand1
 
 	check_operator_validity:
+
+		cmp 	operator,'q'		; exit if (q/Q) is found
+		je		quit	
+		cmp 	operator,'Q'
+		je		quit
+
 		cmp operator , '+'                  
-		je get_operand2                  	 ; jump if equal to save the operator 
+		je get_operand2              ; jump if equal to save the operator 
 		cmp operator , '-'                  
-		je get_operand2                   	 ; jump if equal to save the operator 
+		je get_operand2               ; jump if equal to save the operator 
 		cmp operator , '*'                   
-		je get_operand2               		 ; jump if equal to save the operator 
+		je get_operand2              ; jump if equal to save the operator 
 		cmp operator , '/'                 
-		je get_operand2                     ; jump if equal to save the operator 
+		je get_operand2               ; jump if equal to save the operator 
 
 		jmp invalid_operator                 ; else jump to invalid_operator section
 
@@ -251,8 +246,13 @@ main PROC
         call 	StrLength
         mov  	operand2_len,eax
 
-		mov		al, operand2_string			; check if the operand starts with a sign
-		cmp		al, '+'
+		mov		al, operand2_string			; exit if (q/Q) is found
+		cmp 	al,'q'
+		je		quit	
+		cmp 	al,'Q'
+		je		quit
+
+		cmp		al, '+'						; check if the operand starts with a sign
 		je		sign_found2
 		cmp		al, '-'
 		je		sign_found2
@@ -285,7 +285,7 @@ main PROC
 			call	CrLf
 			jmp get_operand2
 
-	overflowBlock0:		              	; if overflow occurs in results
+	result_overflow:		              	; if overflow occurs in results
 		call Crlf
 		mov edx , offset overflow_msg0    	
 		call WriteString
@@ -293,7 +293,7 @@ main PROC
 		jmp quit	      				; exit the program 
 
 
-	overflowBlock1:		              		; if overflow occurs in operand 1
+	operand1_overflow:		              		; if overflow occurs in operand 1
 		call Crlf
 		mov edx , offset overflow_msg1    	; ask the user to enter smaller number
 		call WriteString
@@ -302,13 +302,13 @@ main PROC
 		jmp get_operand1	      			; return the user back to the get_operand1 section 
 
 		
-	overflowBlock2:			      			; if overflow occurs in operand 1
+	operand2_overflow:			      			; if overflow occurs in operand 2
 		call Crlf
 		mov edx , offset overflow_msg2    	; ask the user to enter smaller number
 		call WriteString
 		jmp get_operand2	      			; return the user back to the get_operand2 section
 
-	div_zero: 
+	division_by_zero: 
 		call Crlf
 		mov edx , offset zeroDiv_msg    ; print message if found divide by zero 
 		call WriteString
@@ -377,10 +377,15 @@ main PROC
         mov	eax, result
 		call	WriteInt
 		call	CrLf
-		jmp		get_operand1
+		call	CrLf
+		jmp		start
 
 
 	quit:
+		call	CrLf
+		call	CrLf
+		lea		edx, endTitle
+		call	WriteString	
 		call	CrLf
 		exit	
 
