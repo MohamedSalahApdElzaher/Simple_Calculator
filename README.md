@@ -195,8 +195,46 @@ Now we just finished our loop then the result will be the number stored in numbe
 
 <br/>
 
-### Error Handling
-To be filled later
+### Exception Handling
+
+- **Invalid expression**
+
+> **Example 1:** `Enter expression (eg. 2+3*4) and (Q/q) to exit: ghjvjs + 35ffv`
+> 
+> **Output:** `< Invalid expression, try again ... >`
+>
+>`Enter expression (eg. 2+3*4) and (Q/q) to exit: `
+
+> **Example 2:** `Enter expression (eg. 2+3*4) and (Q/q) to exit: 2**2`
+> 
+> **Output:** `< Invalid expression, try again ... >`
+>
+>`Enter expression (eg. 2+3*4) and (Q/q) to exit: `
+
+- **Division by zero**
+
+> **Example:** `Enter expression (eg. 2+3*4) and (Q/q) to exit: 5*2+9/0-20`
+>  
+> **Output:** `< Division by zero is not valid >`
+
+- **Overflow cases**
+
+1. **Input overflow** 
+
+
+> **Example:** `Enter expression (eg. 2+3*4) and (Q/q) to exit: 3000000000 + 8`
+>  
+> **Output:** `< Invalid number in the expression, try again ... >`
+>
+>`Enter expression (eg. 2+3*4) and (Q/q) to exit: `
+
+ 
+  2. **Result overflow** 
+
+> **Example:** `Enter expression (eg. 2+3*4) and (Q/q) to exit: 2000000000 + 2000000000`
+>  
+> **Output:** `< Incorrect result due to overflow, try again >`
+
 
 ### Limitations
 To be filled later
