@@ -14,7 +14,7 @@ resultPrompt2		DB " is ", 0
 parth_1				DB "( ", 0
 parth_2				DB " )", 0
 
-overflow_msg	  	DB " <threre an overflow happend  > ", 0
+overflow_msg	  	DB " < threre is an overflow happend  > ", 0
 zeroDiv_msg         DB " < Division by zero is not valid > ", 0         ; division by zero exception message
 
 expression				DB 331 DUP(?)			; array for maximum 150 characters to hold the expression
