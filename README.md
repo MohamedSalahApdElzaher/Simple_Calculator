@@ -18,36 +18,6 @@ The two-operand simple calculator is an assembly program that solves algebraic o
 
 Calculate basic four operations using symbols ( + , - , * , / ).
 <br/>
-    
-- **Algorithm description:**
-
-
-If we have an arithmetic operation like 2*30/5-3+24/2
-We generate two arrays
-The first one to hold the numbers in that operation
-2   30   5	 3 	24  2
-And it will be like that 
-And second one will hold the operators and it will like that
-*   /   -  	+  	/	  $
-Filling the last position with this symbol $
-
-Then we iterate over the operator array
-If we find that the operator is multiplication or division then we will do the operation on the current number and the next one then we store the result in the next number in the array of numbers
-In the above example we multiply 2*30 and store 60 in the second place and the array will be 
-2   60   5   3   24	 2
-
-Then we continue doing the division so we do the division 60/5 and store the result in the third number in the array of numbers and the array will be 
-2   60  12   3 	24   2
-
-Then we will find that the next operation to be done is minus but we need to end all division and multiplication first but after we end them it is obvious that the first number in addition and subtraction operations will be this number i.e. 12 so we store it in a variable called number1 and store that the operation to be done i.e. subtraction in another variable called current_operator then continue 
-After that we will find that the next operation is addition so is obvious that the second number in addition and subtraction operations will be this number i.e. 3 then we do not have to wait for all multiplication and division operations to be done so we check what is the operation to be done by checking the current_operator variable then we will do that operation i.e. subtraction 12-3 and store its result i.e. 9 in number1 to be the first number of the next addition or subtraction operation then we store the addition in current_operator to be the next operation to be done in addition and subtraction operations then continue  
-We will find that the next operation is division so we divide the corresponding number by the next one i.e. 24/2 then we store the result in the next number so the numbers array will be 
-2 	60   12 	3	 24	 12
- 
-Then at the last operation we will find that the operator is $ then now we get the next number in our addition and subtraction operations so we check the current_operator then we will find that the operation to be done is addition then we add number1 with that number i.e. 9+12 and store the result i.e. 21 in number1 
-Now we just finished our loop then the result will be the number stored in number1 i.e. 21  
-2*30/5-3+24/2 = 21
-
 
 <br/>
 
@@ -185,14 +155,41 @@ The expression-solver calculator is an assembly program that solves algebraic ex
 
 Evaluate basic expressions using symbols ('+' '-' '*' '/' ).
 <br/>
-    
-- **Algorithm description:**
-
-<br/>
-
 > **Example:** `Enter expression to evaluate (eg. 2 + 3 * 4): 5+2*10-6+9/3*100+99-21-2+4*5 `
 >
 > **Output:** `Evaluation result of the expression (5+2*10-6+9/3*100+99-21-2+4*5) is +415 `
+<br/>
+
+- **Algorithm description:**
+  
+    
+If we have an arithmetic operation like 2*30/5-3+24/2
+We generate two arrays
+The first one to hold the numbers in that operation
+2     30     5 	   3   	 24     2
+And it will be like that 
+And second one will hold the operators and it will like that
+*     /     -    	+    	/	     $
+Filling the last position with this symbol $
+
+Then we iterate over the operator array
+If we find that the operator is multiplication or division then we will do the operation on the current number and the next one then we store the result in the next number in the array of numbers
+In the above example we multiply 2*30 and store 60 in the second place and the array will be 
+2    60     5     3     24	   2
+
+Then we continue doing the division so we do the division 60/5 and store the result in the third number in the array of numbers and the array will be 
+2     60    12     3 	  24     2
+
+Then we will find that the next operation to be done is minus but we need to end all division and multiplication first but after we end them it is obvious that the first number in addition and subtraction operations will be this number i.e. 12 so we store it in a variable called number1 and store that the operation to be done i.e. subtraction in another variable called current_operator then continue 
+After that we will find that the next operation is addition so is obvious that the second number in addition and subtraction operations will be this number i.e. 3 then we do not have to wait for all multiplication and division operations to be done so we check what is the operation to be done by checking the current_operator variable then we will do that operation i.e. subtraction 12-3 and store its result i.e. 9 in number1 to be the first number of the next addition or subtraction operation then we store the addition in current_operator to be the next operation to be done in addition and subtraction operations then continue  
+We will find that the next operation is division so we divide the corresponding number by the next one i.e. 24/2 then we store the result in the next number so the numbers array will be 
+2 	  60     12     3	   24	   12
+ 
+Then at the last operation we will find that the operator is $ then now we get the next number in our addition and subtraction operations so we check the current_operator then we will find that the operation to be done is addition then we add number1 with that number i.e. 9+12 and store the result i.e. 21 in number1 
+Now we just finished our loop then the result will be the number stored in number1 i.e. 21  
+2*30/5-3+24/2 = 21
+
+<br/>
 
 ### Error Handling
 
