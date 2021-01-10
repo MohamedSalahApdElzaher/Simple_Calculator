@@ -41,9 +41,9 @@ number2 				DD 0				; hold the secound number
 .code
 main PROC
 	; print calculator title
-		call	CrLf
-		mov		edx, OFFSET calcTitle
-		call	WriteString
+		call	CrLf                               ;Writes a carriage return/linefeed sequence (0Dh,0Ah) to standard output.
+		mov	edx, OFFSET calcTitle
+		call	WriteString			  ;Writes a null-terminated string to standard output.
 		call	CrLf
 		call	CrLf
 
@@ -53,7 +53,7 @@ main PROC
 		call	WriteString
 		lea  	edx, expression
 		mov  	ecx,330				; stop reading when user clicks enter
-		call 	ReadString
+		call 	ReadString			; Reads a string of up to ECX non-null characters from standard input,stop when user click enter
 		call	CrLf
 
 	; excluding operands and operators from the expression (eg. 2 + 3 * 4)
@@ -76,7 +76,7 @@ main PROC
 		mov		edx, operators_count
 		mov		operators_array[edx], al
 		inc 	operators_count					; increment  operators_array counter
-		dec		expression_end
+		dec		expression_end				; decrement  expression_end counter
 
 		;	exit if the expression length reached
 		cmp 	expression_end, 0	
@@ -91,8 +91,8 @@ main PROC
 		Loop1:
 		mov		al, [ebx]
 		cmp		al, ' ' 
-		je		continue		
-		call 	IsDigit				; ( 20 + 5 )
+		je		continue		;jump if equal
+		call 	IsDigit				; ( 20 + 5 ) Determines whether the character in AL is a valid decimal digit.
 		jnz	 	parse_operand		; jump to parse the loaded operand
 		mov		al , [ebx]
 		mov		string_operand[edi], al
