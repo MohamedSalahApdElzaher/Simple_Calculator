@@ -22,12 +22,40 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 <br/>
 
 - **Addition operation**
+> *Example:* `Enter the first number, or (Q/q) to exit:  15`
+> 
+>`Choose an operation (+, -, *, /), or (Q/q) to exit: + `
+>
+>`Enter the second number, or (Q/q) to exit: 20`
+>
+> *Output:* `Evaluation result is (+15) + (+20) = +35`
 
 - **Subtraction operation**
+> *Example:* `Enter the first number, or (Q/q) to exit:  3`
+> 
+>`Choose an operation (+, -, *, /), or (Q/q) to exit: - `
+>
+>`Enter the second number, or (Q/q) to exit: 13`
+>
+> *Output:* `Evaluation result is (+3) - (+13) = -10`
 
 - **Multiplication operation**
+> *Example:* `Enter the first number, or (Q/q) to exit:  500`
+> 
+>`Choose an operation (+, -, *, /), or (Q/q) to exit: * `
+>
+>`Enter the second number, or (Q/q) to exit: -5`
+>
+> *Output:* `Evaluation result is (+500) * (-5) = -2500`
 
 - **Division operation**
+> *Example:* `Enter the first number, or (Q/q) to exit:  500000`
+> 
+>`Choose an operation (+, -, *, /), or (Q/q) to exit: / `
+>
+>`Enter the second number, or (Q/q) to exit: 1000`
+>
+> *Output:* `Evaluation result is (+500000) / (+1000) = +500`
 
 
 ### Exception Handling
