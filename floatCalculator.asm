@@ -64,7 +64,16 @@ main PROC
 		mov	operator, al	    		; copy the character from AL to operator variable
 
 		;jmp check_operator_validity		; check if the operator is a valid 
-		
+		cmp operator , '+'                  
+		je n2                     ; jump if equal to do_addition 
+		cmp operator , '-'                  
+		je n2                  ; jump if equal to do_subtraction
+		cmp operator , '*'                   
+		je n2               ; jump if equal to do_multiplication 
+		cmp operator , '/'                 
+		je n2                     ; jump if equal to do_division
+       		 jmp invalid_operator
+
 	; Ask and get the second  number
 		n2:	call crlf
 			call crlf
