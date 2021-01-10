@@ -147,9 +147,6 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 >
 > **Output:** `< Result is too large to fit, try again >`
 
-https://user-images.githubusercontent.com/47748059/104137106-27f3dd00-53a3-11eb-8327-9ce94d39a356.mp4
-
-
 
 ##  B. Expression-solver simple calculator
 
