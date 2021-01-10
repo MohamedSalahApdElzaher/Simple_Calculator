@@ -139,11 +139,16 @@ Calculate basic four operations using symbols ( + , - , * , / ).
 
 ### Limitations
 
-To be filled later
+> **Out-of-bound error:** `Enter the first number: 2000000000`
+>
+> `Choose an operation (+, -, *, /): * `
+> 
+> `Enter the second number: 4000000000`
+>
+> **Output:** `< Result is too large to fit, try again >`
 
-### Notes
+### GIfs
 
-To be filled later
 
 ##  B. Expression-solver simple calculator
 
@@ -191,16 +196,13 @@ Now we just finished our loop then the result will be the number stored in numbe
 <br/>
 
 ### Error Handling
-
 To be filled later
 
 ### Limitations
-
 To be filled later
 
-### Notes
+### GIFS
 
-## Resources
 
 **Tools**
 
@@ -216,10 +218,12 @@ To be filled later
 - [Visual studio code](https://code.visualstudio.com/Download)
 - [Irvine Library](http://csc.csudh.edu/mmccullough/asm/help/index.html?page=source%2Fmacros32%2Fmdumpmem.htm)
 
-// Briefy illustration of solving 2 inputs program algorithm 
 
-// Briefy illustration of solving equation program algorithm 
+**Team Members**
 
-// put Image show program at first before any I/O operations
+- [Muhammad Salah](https://github.com/MohamedSalahApdElzaher)
+- [Muhammad Mohie](https://github.com/muhammadmohie98)
+- [Muhammad Adel Sharkawy](https://github.com/mohamed-el-sharkawy)
+- [Youseef Magdy](https://github.com/youssefmagdy1)
+- [Mohamed-Abd-El-Nasser](https://github.com/Mohamed-Abd-El-Nasser)
 
-// put some gifs show different I/O operations
