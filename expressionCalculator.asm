@@ -16,6 +16,7 @@ parth_2				DB " )", 0
 
 overflow_msg0	  			DB " < invalid number in the expression, try again ... > ", 0
 overflow_msg1	  			DB " < Incorrect result due to overflow, try again > ", 0
+invalid_expression_msg	  	DB " < invalid expression, try again ... > ", 0
 
 zeroDiv_msg         DB " < Division by zero is not valid > ", 0         ; division by zero exception message
 
@@ -65,7 +66,9 @@ main PROC
         mov  	expression_length, eax
 		mov  	expression_end, eax		; initialize the expression end counter with expression length
 
-	get_operands:
+		jmp		expression_validity
+
+	extract_operands:
 
 		mov		operands_count, 0				; initialize operands count
 		mov		operators_count, 0				; initialize operators count
@@ -220,6 +223,41 @@ div_zero:   ; block for divisoin by zero
 		call 	Crlf
 		call 	Crlf
 		jmp 	quit 
+
+expression_validity:
+
+		mov		ecx, expression_length
+		mov		edx, 0
+		validity_loop:
+		mov		al, expression[edx]
+		cmp 	al,'+'
+		je		contiue	
+		cmp 	al,'-'
+		je		contiue	
+		cmp 	al,'*'
+		je		contiue	
+		cmp 	al,'/'
+		je		contiue	
+		cmp 	al,'q'
+		je		quit	
+		cmp 	al,'Q'
+		je		quit	
+		; not an operator? the chech if its a digit 
+		call 	IsDigit				
+		jnz	 	invalid_expression		
+		contiue:
+		inc		edx
+		loop	validity_loop
+
+		jmp		extract_operands
+
+
+invalid_expression:
+		lea 	edx , invalid_expression_msg    	; ask the user to enter smaller numbers in the expression
+		call 	WriteString
+		call 	Crlf
+		call 	Crlf
+		jmp 	read_expression 
 
 input_overflow:		
 		call Crlf
