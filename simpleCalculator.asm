@@ -139,15 +139,6 @@ main PROC
         ; Use 'cmp' to check  
 
     do_multiplication:
-		mov ebx , operand1
-		cmp ebx, 0
-		jl _Mul   		               ; Jump if less    
-		mov ebx , operand2
-		cmp ebx, 0	
-		jl _Mul   		                ; Jump if less 
-	
-
-	_Mul:				          ; imul used in signed numbers
 		mov eax,operand1          ; copy operand1 value --> eax
 		mov ebx,operand2          ; copy operand2 value --> ebx
 		imul ebx                  ; imul eax, ebx & store result in edx-eax
