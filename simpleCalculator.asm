@@ -20,7 +20,7 @@ result           	DD ?
 quotinent			DD ?  ; for division operator 
 remainder 			DD ?  ; for division operator 
 
-prompt1				DB "Enter the first number: ", 0
+prompt1				DB "Enter the first number or q for quit: ", 0
 prompt2				DB "Enter the second number: ", 0
 prompt3				DB "Choose an operation (+, -, *, /): ", 0
 resultPrompt		DB "Evaluation result: ", 0
@@ -81,7 +81,7 @@ main PROC
 		call	WriteString				; write the prompt3 guidance message
 		call	ReadChar				; read the operator from the user and store it in AL
 		mov	operator, al	    		; copy the character from AL to operator variable
-
+	
 		jmp check_operator_validity		; check if the operator is a valid 
 
 	; Ask and get the first number
@@ -163,16 +163,16 @@ main PROC
 		xor EDX, EDX  		 	; clear EdX => will have a most signtific 32bit from 64bit 
 		mov EAX, operand1		; get operands  which is 32bit 
 		mov EBX, operand2 		; make divisble by to EBX 
-		cdq			        ; sign extend 
+		cdq			        	; sign extend 
 		cmp EBX , 0h			; check the value of EBX is it zero will make an error 
 		je div_zero 
-		idiv EBX 			; make a div operator 
-		mov quotinent, EAX  	        ; save quotinent
+		idiv EBX 				; make a div operator 
+		mov quotinent, EAX		; save quotinent
 		mov remainder, EDX 
 		mov result, EAX  
 		add EDX, EDX 			; double  remainder 
 		cmp EDX, EBX 			; comp with divisible if it is bigger it will round 
-		jb skip1 					; itis not big enough sp jump the nexet instruction 
+		jb skip1				; itis not big enough sp jump the nexet instruction 
 		inc result 
 	skip1:
 		jo overflowBlock0             ; jump if found overflow 
@@ -188,6 +188,10 @@ main PROC
         mov  	operand1_len,eax
 
 		mov		al, operand1_string			; check if the operand starts with a sign
+		cmp 	al,'q'
+		je		quit	
+		cmp 	al,'Q'
+		je		quit	
 		cmp		al, '+'
 		je		sign_found1
 		cmp		al, '-'
@@ -373,7 +377,7 @@ main PROC
         mov	eax, result
 		call	WriteInt
 		call	CrLf
-		jmp 	quit
+		jmp		get_operand1
 
 
 	quit:
