@@ -14,7 +14,9 @@ resultPrompt2		DB " is ", 0
 parth_1				DB "( ", 0
 parth_2				DB " )", 0
 
-overflow_msg	  	DB " < threre is an overflow happend  > ", 0
+overflow_msg0	  			DB " < invalid number in the expression, try again ... > ", 0
+overflow_msg1	  			DB " < Incorrect result due to overflow, try again > ", 0
+
 zeroDiv_msg         DB " < Division by zero is not valid > ", 0         ; division by zero exception message
 
 expression				DB 331 DUP(?)			; array for maximum 150 characters to hold the expression
@@ -41,9 +43,9 @@ number2 				DD 0				; hold the secound number
 .code
 main PROC
 	; print calculator title
-		call	CrLf                               ;Writes a carriage return/linefeed sequence (0Dh,0Ah) to standard output.
-		mov	edx, OFFSET calcTitle
-		call	WriteString			  ;Writes a null-terminated string to standard output.
+		call	CrLf
+		mov		edx, OFFSET calcTitle
+		call	WriteString
 		call	CrLf
 		call	CrLf
 
@@ -53,7 +55,7 @@ main PROC
 		call	WriteString
 		lea  	edx, expression
 		mov  	ecx,330				; stop reading when user clicks enter
-		call 	ReadString			; Reads a string of up to ECX non-null characters from standard input,stop when user click enter
+		call 	ReadString
 		call	CrLf
 
 	; excluding operands and operators from the expression (eg. 2 + 3 * 4)
@@ -76,7 +78,7 @@ main PROC
 		mov		edx, operators_count
 		mov		operators_array[edx], al
 		inc 	operators_count					; increment  operators_array counter
-		dec		expression_end				; decrement  expression_end counter
+		dec		expression_end
 
 		;	exit if the expression length reached
 		cmp 	expression_end, 0	
@@ -91,8 +93,8 @@ main PROC
 		Loop1:
 		mov		al, [ebx]
 		cmp		al, ' ' 
-		je		continue		;jump if equal
-		call 	IsDigit				; ( 20 + 5 ) Determines whether the character in AL is a valid decimal digit.
+		je		continue		
+		call 	IsDigit				; ( 20 + 5 )
 		jnz	 	parse_operand		; jump to parse the loaded operand
 		mov		al , [ebx]
 		mov		string_operand[edi], al
@@ -115,6 +117,7 @@ main PROC
 
 		mov   	ecx, operand_len
     	call  	ParseInteger32				; change the string operand to integer value
+		jo		input_overflow				
 
 		mov		edx, operands_index				; store parsed values inside the array
 		mov		operands_array[edx], eax	 
@@ -176,7 +179,7 @@ do_multiplication:
 		mov 	eax, operands_array[esi+4]      ;  eax = arr[i+1]
 		imul 	temp
 		mov 	operands_array[esi+4],eax       ; arr[i+1] *= eax  ; put the result in next indexing 
-		jo 		overflowBlock
+		jo 		result_overflow
 		jmp 	endl12
 do_division:
 	   xor     edx, edx  
@@ -193,19 +196,21 @@ do_division:
         inc     eax  
       skip1: 
 		mov 	operands_array[esi+4], eax     ; put the result in next indexing 
-		; jo overflowBlock
+		jo result_overflow
 		jmp endl12							; jum] to the end of loop 
 
 do_addition:
 		mov eax,number1
         add eax, operands_array[esi]
 		mov number1,eax
+		jo result_overflow
         jmp endl1								; jump to change to next operator 
 
 do_subtraction:
 		mov eax,number1
 		sub eax,operands_array[esi]
 		mov number1,eax
+		jo result_overflow
         jmp endl1
 
 div_zero:   ; block for divisoin by zero 
@@ -216,13 +221,21 @@ div_zero:   ; block for divisoin by zero
 		call 	Crlf
 		jmp 	quit 
 
-overflowBlock:		
+input_overflow:		
 		call Crlf
-		mov edx , offset overflow_msg    	; ask the user to enter smaller number
-		call WriteString
+		mov 	edx , offset overflow_msg0    	
+		call 	WriteString
+		call 	Crlf
+		call 	Crlf
+		jmp 	read_expression 			; ask the user to enter smaller numbers in the expression
+
+result_overflow:		
 		call Crlf
-		call Crlf
-		jmp quit 	
+		mov 	edx , offset overflow_msg1    	
+		call 	WriteString
+		call 	Crlf
+		call 	Crlf
+		jmp 	read_expression 			; ask the user to enter another expression
 	; Write the evaluation results back to user
 
 	print_results:
