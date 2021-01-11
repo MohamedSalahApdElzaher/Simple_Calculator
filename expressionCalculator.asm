@@ -21,17 +21,17 @@ overflow_msg1	  		DB " < Incorrect result due to overflow, try again > ", 0
 invalid_expression_msg	  	DB " < Invalid expression, try again ... > ", 0
 zeroDiv_msg         		DB " < Division by zero is not valid > ", 0         ; division by zero exception message
 
-expression			DB 331 DUP(?)					    ; array for maximum 150 characters to hold the expression
+expression			DB 331 DUP(?)					    ; array for maximum 331 characters to hold the expression
 expression_length		DD	?
 expression_end			DD	?					    ; counter to know if the expression end reached
 
 string_operand			DB 16 dup (?)
 operand_len			DD	?
 
-operators_array			DB 31 dup (?)			; maximum number of operators in the expression is 50
+operators_array			DB 31 dup (?)			; maximum number of operators in the expression is 31
 operators_count			DD	?
 
-operands_array			DD	32  dup (?)		; maximum number of operands in the expression is 51
+operands_array			DD	32  dup (?)		; maximum number of operands in the expression is 32
 operands_count			DD	?
 operands_index			DD	?
 
