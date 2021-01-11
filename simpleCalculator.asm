@@ -68,23 +68,23 @@ main PROC
 
 		mov   	ecx, operand1_len
     		call  	ParseInteger32
-		mov	operand1, eax	    		; copy EAX value to the first operand
-		jo 	operand1_overflow		; jump to operand1_overflow section if there is overflow in operand1
+		mov	operand1, eax	    				; copy EAX value to the first operand
+		jo 	operand1_overflow				; jump to operand1_overflow section if there is overflow in operand1
 
 	; Ask and get the arithmatic operator
 	get_operator:
 		call	CrLf							
 		lea	edx, prompt3
-		call	WriteString				; write the prompt3 guidance message
-		call	ReadChar				; read the operator from the user and store it in AL
-		mov	operator, al	    			; copy the character from AL to operator variable
+		call	WriteString					; write the prompt3 guidance message
+		call	ReadChar					; read the operator from the user and store it in AL
+		mov	operator, al	    				; copy the character from AL to operator variable
 	
-		jmp 	check_operator_validity			; check if the operator is a valid 
+		jmp 	check_operator_validity				; check if the operator is a valid 
 
 	; Ask and get the first number
 	get_operand2:
-		call Crlf
-		call Crlf
+		call 	Crlf
+		call 	Crlf
 		lea	edx, prompt2
 		call	WriteString					; write the prompt1 guidance message
 		lea  	edx, operand2_string
@@ -95,42 +95,42 @@ main PROC
 		
 		parsing_operand2:
 
-		mov   ecx,operand2_len
-    		call  ParseInteger32
-		mov   operand2, eax	   		 ; copy EAX value to the first operand
+		mov   	ecx,operand2_len
+    		call  	ParseInteger32
+		mov   	operand2, eax	   		 		; copy EAX value to the first operand
 
-		jo    operand2_overflow		; jump to operand2_overflow section if there is overflow in operand2
+		jo    	operand2_overflow				; jump to operand2_overflow section if there is overflow in operand2
 
 		call	CrLf
 	
 	; Redirection to the  the needed operator
 
-		cmp operator , '+'                  
-		je do_addition                     ; jump if equal to do_addition 
-		cmp operator , '-'                  
-		je do_subtraction                  ; jump if equal to do_subtraction
-		cmp operator , '*'                   
-		je do_multiplication               ; jump if equal to do_multiplication 
-		cmp operator , '/'                 
-		je do_division                     ; jump if equal to do_division
+		cmp 	operator , '+'                  
+		je 	do_addition                     		; jump if equal to do_addition 
+		cmp 	operator , '-'                  
+		je 	do_subtraction                  		; jump if equal to do_subtraction
+		cmp 	operator , '*'                   
+		je 	do_multiplication               		; jump if equal to do_multiplication 
+		cmp 	operator , '/'                 
+		je 	do_division                     		; jump if equal to do_division
 
 	; addition opertion 
 
 	do_addition:
-		mov eax, operand2
-		add eax , operand1           ; num1  + num2
-		mov result , eax
-		jo result_overflow           ; jump if found overflow 
-		jmp print_results            ; print resultes
+		mov 	eax, operand2
+		add 	eax , operand1           			; num1  + num2
+		mov 	result , eax
+		jo 	result_overflow           			; jump if found overflow 
+		jmp 	print_results            			; print resultes
 
 	; subtraction opertion 
 
 	do_subtraction:
-		mov eax , operand1 	     ; copy the first operand in eax
-		sub eax , operand2           ; subtract the second operand form the fisrt operand
-		mov result , eax             ; copy the subtraction result in the result
-		jo result_overflow           ; jump to overflow section if overflow found
-		jmp print_results            ; else jump to print_result section
+		mov 	eax , operand1 	     				; copy the first operand in eax
+		sub 	eax , operand2           			; subtract the second operand form the fisrt operand
+		mov 	result , eax             			; copy the subtraction result in the result
+		jo 	result_overflow           			; jump to overflow section if overflow found
+		jmp 	print_results            			; else jump to print_result section
 	
 	; multiplication operation	
 
@@ -139,30 +139,30 @@ main PROC
         ; Use 'cmp' to check  
 
     do_multiplication:
-		mov eax,operand1          ; copy operand1 value --> eax
-		mov ebx,operand2          ; copy operand2 value --> ebx
-		imul ebx                  ; imul eax, ebx & store result in edx-eax
-		mov result, eax           ; copy eax value --> result
-		jo result_overflow         ; jump if overflow found
-		jmp print_results         ; jump to print_results
+		mov 	eax,operand1          				; copy operand1 value --> eax
+		mov 	ebx,operand2          				; copy operand2 value --> ebx
+		imul 	ebx                  				; imul eax, ebx & store result in edx-eax
+		mov 	result, eax           				; copy eax value --> result
+		jo 	result_overflow         			; jump if overflow found
+		jmp 	print_results         				; jump to print_results
 					
 
 	do_division: 
-		xor EDX, EDX  		 	; clear EdX => will have a most signtific 32bit from 64bit 
-		mov EAX, operand1		; get operands  which is 32bit 
-		mov EBX, operand2 		; make divisble by to EBX 
-		cdq			        ; sign extend 
-		cmp EBX , 0h			; check the value of EBX is it zero will make an error 
-		je division_by_zero 
-		idiv EBX 			; make a div operator 
-		mov result, EAX   
-		jmp print_results
+		xor 	EDX, EDX  		 			; clear EdX => will have a most signtific 32bit from 64bit 
+		mov 	EAX, operand1					; get operands  which is 32bit 
+		mov 	EBX, operand2 					; make divisble by to EBX 
+		cdq			        			; sign extend 
+		cmp 	EBX , 0h					; check the value of EBX is it zero will make an error 
+		je 	division_by_zero 
+		idiv 	EBX 						; make a div operator 
+		mov 	result, EAX   
+		jmp 	print_results
 
 	; handling exceptions 
 
 	check_operand1_validity:
 		
-		lea  	edx, operand1_string			; get the length of the first operand 
+		lea  	edx, operand1_string				; get the length of the first operand 
         	call 	StrLength
         	mov  	operand1_len,eax
 
@@ -172,23 +172,23 @@ main PROC
 		cmp 	al,'Q'
 		je	quit
 
-		cmp	al, '+'					 ; check if the operand starts with a sign
+		cmp	al, '+'					 	; check if the operand starts with a sign
 		je	sign_found1
 		cmp	al, '-'
 		je	sign_found1
 
-		sign_not_found1:				 ; start checking operand validity from the begining
+		sign_not_found1:				 	; start checking operand validity from the begining
 		mov	ecx, operand1_len
 		lea	ebx, operand1_string
 		jmp 	check_loop1
 
-		sign_found1:					 ; start checking operand validity from the second character
+		sign_found1:					 	; start checking operand validity from the second character
 		mov	ecx, operand1_len				
 		dec	ecx
 		lea	ebx, operand1_string
 		inc	ebx
 
-		check_loop1:					  ; checking loop
+		check_loop1:					  	; checking loop
 		mov	al, [ebx] 		
 		call 	IsDigit				
 		jnz	invalid_operand1
@@ -207,29 +207,29 @@ main PROC
 
 	check_operator_validity:
 
-		cmp 	operator,'q'		; exit if (q/Q) is found
+		cmp 	operator,'q'	     	  ; exit if (q/Q) is found
 		je	quit	
 		cmp 	operator,'Q'
 		je	quit
 
-		cmp operator , '+'                  
-		je get_operand2              ; jump if equal to save the operator 
-		cmp operator , '-'                  
-		je get_operand2              ; jump if equal to save the operator 
-		cmp operator , '*'                   
-		je get_operand2              ; jump if equal to save the operator 
-		cmp operator , '/'                 
-		je get_operand2              ; jump if equal to save the operator 
+		cmp 	operator , '+'                  
+		je 	get_operand2              ; jump if equal to save the operator 
+		cmp 	operator , '-'                  
+		je 	get_operand2              ; jump if equal to save the operator 
+		cmp 	operator , '*'                   
+		je 	get_operand2              ; jump if equal to save the operator 
+		cmp 	operator , '/'                 
+		je 	get_operand2              ; jump if equal to save the operator 
 
-		jmp invalid_operator                 ; else jump to invalid_operator section
+		jmp 	invalid_operator         ; else jump to invalid_operator section
 
-		invalid_operator:                    ; print message if the user enterd a invalid operator 
-			call Crlf
-			call Crlf
-			mov edx , offset operator_msg
-			call WriteString
-			call Crlf
-			jmp get_operator
+		invalid_operator:            	; print message if the user enterd a invalid operator 
+			call 	Crlf
+			call 	Crlf
+			mov 	edx , offset operator_msg
+			call 	WriteString
+			call 	Crlf
+			jmp 	get_operator
 
 	check_operand2_validity:
 		
