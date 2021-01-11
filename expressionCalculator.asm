@@ -154,7 +154,7 @@ l1:
 		; if not send it to numeber1 and number2 to do second piroity operation + and - 
       		mov 	eax, first_access		; if (number1==0)number1=[ebx] , current_operator = [edx]
 		cmp 	eax, 0
-		je	first_check			; 
+		je	first_check			 
 		jmp 	second_check    		; else number2 = [ebx]     number1 = number1 +- number2
 		
 endl1: ; change the current operator afte make the prev on in second check 
@@ -204,14 +204,14 @@ do_division:
       skip1: 
 		mov 	operands_array[esi+4], eax     				; put the result in next indexing 
 		jo 	result_overflow
-		jmp 	endl12							; jum] to the end of loop 
+		jmp 	endl12							; jum to the end of loop 
 
 do_addition:
 		mov 	eax,number1
         	add 	eax, operands_array[esi]
 		mov 	number1,eax
 		jo 	result_overflow
-        	jmp 	endl1								; jump to change to next operator 
+        	jmp 	endl1							; jump to change to next operator 
 
 do_subtraction:
 		mov 	eax,number1
@@ -257,11 +257,11 @@ expression_validity:
 
 
 invalid_expression:
-		lea 	edx , invalid_expression_msg    	; ask the user to enter smaller numbers in the expression
+		lea 	edx , invalid_expression_msg    	
 		call 	WriteString
 		call 	Crlf
 		call 	Crlf
-		jmp 	read_expression 
+		jmp 	read_expression                         ; ask the user to enter valid numbers in the expression
 
 input_overflow:		
 		call 	Crlf
@@ -297,7 +297,7 @@ result_overflow:
 		lea	edx, resultPrompt2
 		call	WriteString	
 		
-		mov	eax, number1			; here to print the answer 
+		mov	eax, number1					; here to print the answer 
 		call	WriteInt	
 		call	CrLf
 		call	CrLf
