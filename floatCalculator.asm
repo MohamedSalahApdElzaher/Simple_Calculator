@@ -29,7 +29,7 @@ main PROC
     
 	; Printing the calculator title
 		call	CrLf				; spacing for readability
-		lea	edx, calcTitle		    ; copy the address of caltitle to EDX register
+		lea	edx, calcTitle		        ; copy the address of caltitle to EDX register
 		call	WriteString			; write the calculator title
 		call	CrLf	
 		call	CrLf							
@@ -50,13 +50,13 @@ main PROC
 
 		; check if the operator is a valid 
 		cmp operator , '+'                  
-		je n2                     ; jump if equal to do_addition 
+		je n2                     			; jump if equal to do_addition 
 		cmp operator , '-'                  
-		je n2                  	  ; jump if equal to do_subtraction
+		je n2                  	  			; jump if equal to do_subtraction
 		cmp operator , '*'                   
-		je n2                     ; jump if equal to do_multiplication 
+		je n2                     			; jump if equal to do_multiplication 
 		cmp operator , '/'                 
-		je n2                     ; jump if equal to do_division
+		je n2                     			; jump if equal to do_division
        		jmp invalid_operator
 
 	; Ask and get the second  number
@@ -70,76 +70,79 @@ main PROC
 	; Redirection to the  the needed operator
 
 		cmp operator , '+'                  
-		je do_addition                     ; jump if equal to do_addition 
+		je do_addition                     		; jump if equal to do_addition 
 		cmp operator , '-'                  
-		je do_subtraction                  ; jump if equal to do_subtraction
+		je do_subtraction                  		; jump if equal to do_subtraction
 		cmp operator , '*'                   
-		je do_multiplication               ; jump if equal to do_multiplication 
+		je do_multiplication               		; jump if equal to do_multiplication 
 		cmp operator , '/'                 
-		je do_division                     ; jump if equal to do_division
+		je do_division                     		; jump if equal to do_division
         
 	; addition opertion 
 
 	do_addition:
-        	faddp st(1),st(0)
-		jo overflowBlock0             ; jump if found overflow 
-		jmp print_results            ; print resultes
+        	faddp st(1),st(0)				; add st(1) to st(0) and save the ruslt on st(0)
+		jo overflowBlock0            			; jump if found overflow 
+		jmp print_results            			; print resultes
 
 	; subtraction opertion 
 
 	do_subtraction:
-		fsubp st(1),st(0)
-        jo overflowBlock0                    ; jump to overflow section if overflow found
-		jmp print_results            ; else jump to print_result section
+		fsubp st(1),st(0)				; subtract st(1) from st(0) and save the ruslt on st(0)
+        	jo overflowBlock0                    		; jump to overflow section if overflow found
+		jmp print_results            			; else jump to print_result section
 	
 	; multiplication operation	
 
     do_multiplication:
-		fmulp st(1),st(0)
-       		jo overflowBlock0                          ; jump if overflow found
-		jmp print_results                          ; jump to print_results
+		fmulp st(1),st(0)				; mul st(1) and st(0) and save the ruslt on st(0)
+       		jo overflowBlock0                          	; jump if overflow found
+		jmp print_results                          	; jump to print_results
 					
 
 	do_division: 
-		fdivp st(1),st(0)
-		jo overflowBlock0                           ; jump if found overflow 
-		jmp print_results
+		fdivp st(1),st(0)			        ; div st(0) / st(1) and save the ruslt on st(0)
+		jo overflowBlock0                           	; jump if found overflow 
+		jmp print_results				; jump to print_results
 
 
 	; handling exceptions 
-	overflowBlock0:		              		    ; if overflow occurs in results
-		call Crlf
-		mov edx , offset overflow_msg0    	
-		call WriteString
-		call Crlf			 
-		jmp quit	      			     ; exit the program 
+	overflowBlock0:		              		    	; if overflow occurs in results
+		call 	Crlf
+		mov 	edx , offset overflow_msg0    	
+		call 	WriteString
+		call 	Crlf			 
+		jmp 	quit	      			     	; exit the program 
 
 
 	invalid_operator:
-	       		call crlf
-			mov edx , offset operator_msg    	
-			call WriteString
-			call Crlf			 
-			jmp get_operator
+	       	call 	crlf
+		mov 	edx , offset operator_msg    	
+		call 	WriteString
+		call 	Crlf			 
+		jmp 	get_operator
 
     ; Print results
     
 	print_results:
 		; Print result prompt
 		call	CrLf
-		lea		edx, resultPrompt
+		lea	edx, resultPrompt
 		call	WriteString
+		
 		; Print the equals sign
+		
 		mov	al, equal_sign
 		call	WriteChar
 
 		; Print the spacing
+		
 		mov	al, space
 		call	WriteChar
 
 		;Print out the result
         
-     		 call WriteFloat
+     		 call 	WriteFloat
         	 call	CrLf
 		 jmp 	quit
 
