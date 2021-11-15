@@ -253,7 +253,7 @@ If we have an algebraic expression like (2*30/5-3+24/2) to be solved , we start 
 ## **Team Members**
 
 - [Muhammad Salah](https://github.com/MohamedSalahApdElzaher)
-- [Muhammad Mohie](https://github.com/muhammadmohie98)
+- [Muhammad Mohie](https://github.com/muhammadmohie)
 - [Muhammad Adel Sharkawy](https://github.com/mohamed-el-sharkawy)
 - [Youseef Magdy](https://github.com/youssefmagdy1)
 - [Mohamed Abd-El-Nasser](https://github.com/Mohamed-Abd-El-Nasser)
